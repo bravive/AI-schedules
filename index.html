@@ -519,6 +519,23 @@
       }
     }
 
+    // Intercept nav-back clicks inside the iframe to prevent nested sidebars
+    document.getElementById('content-frame').addEventListener('load', function() {
+      try {
+        var doc = this.contentDocument;
+        if (!doc) return;
+        var navBack = doc.querySelector('.nav-back');
+        if (navBack) {
+          navBack.addEventListener('click', function(e) {
+            e.preventDefault();
+            showDashboard();
+          });
+        }
+      } catch(e) {
+        // Cross-origin frame — ignore
+      }
+    });
+
     // Load manifest to populate sidebar entries dynamically
     fetch('output/manifest.json')
       .then(function(r) { return r.json(); })
