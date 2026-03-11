@@ -20,274 +20,444 @@
           <p class="site-header__subtitle">YouTube deep-dive learning sessions</p>
         </div>
       </div>
-      <div class="site-header__date">2026-03-11 &middot; Wednesday</div>
+      <div class="site-header__date">2026-03-11</div>
     </header>
 
-    <!-- Video Info -->
-    <section class="mt-6">
-      <div class="content-item" style="border-left:3px solid var(--color-accent)">
-        <div class="content-item__body">
-          <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap">
-            <span style="font-size:1.5rem">&#9654;</span>
-            <div>
-              <div style="font-size:var(--text-lg);font-weight:600;color:var(--color-text)">
-                <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">
-                  Let's build GPT: from scratch, in code, spelled out
-                </a>
-              </div>
-              <div style="font-size:var(--text-sm);color:var(--color-text-muted);margin-top:var(--space-1)">
-                <strong>Andrej Karpathy</strong> &middot; 1h 56m &middot; 8.5M+ views
-              </div>
-            </div>
-          </div>
-          <div class="mt-4" style="display:flex;align-items:center;gap:var(--space-3)">
-            <span class="tag tag--green">Session 1 of 5</span>
-            <span class="tag">Bigram Model &amp; Tokenization</span>
-          </div>
-          <div class="mt-4">
-            <div class="confidence">
-              <div class="confidence__bar"><div class="confidence__fill" style="width:20%;background:var(--color-accent)"></div></div>
-              <span class="confidence__label">1/5 sessions</span>
-            </div>
-          </div>
+    <!-- Video & Progress -->
+    <section class="content-item" style="margin-bottom:var(--space-6)">
+      <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+        <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:var(--space-2);font-size:var(--text-lg);font-weight:600;color:var(--color-accent)">
+          &#9654; Let's build GPT: from scratch, in code, spelled out
+        </a>
+      </div>
+      <div style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-3)">
+        Andrej Karpathy &middot; 1h 56m &middot; 8.5M+ views
+      </div>
+      <div style="margin-bottom:var(--space-2);font-size:var(--text-sm);font-weight:600;color:var(--color-text-secondary)">Session 1 of 5 &mdash; Introduction, Bigram Language Model &amp; Tokenization Basics</div>
+      <div class="confidence" style="max-width:300px">
+        <div class="confidence__bar" style="max-width:100%;flex:1">
+          <div class="confidence__fill" style="width:20%;background:var(--color-accent)"></div>
         </div>
+        <span class="confidence__label">1 / 5</span>
       </div>
     </section>
 
-    <!-- Why This Video -->
-    <section class="mt-6">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#11088;</span>
-        Why This Video?
-      </h2>
+    <!-- Why This Video? -->
+    <section style="margin-bottom:var(--space-6)">
+      <h2 class="section-title"><span class="section-title__icon">&#127891;</span> Why This Video?</h2>
       <div class="content-item">
         <div class="content-item__body">
-          <ul style="padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:2">
-            <li><strong>8.5M+ views</strong> &mdash; one of the most-watched AI/ML coding tutorials on all of YouTube</li>
-            <li><strong>Andrej Karpathy</strong> is former Director of AI at Tesla and founding member of OpenAI &mdash; he literally built the systems this video teaches</li>
-            <li><strong>#1 recommended</strong> "build from scratch" video on r/MachineLearning, HackerNews, and countless AI learning threads</li>
-            <li><strong>Code-first approach</strong> &mdash; you don't just learn theory, you type a working GPT and understand every line</li>
-            <li><strong>Low prerequisites</strong> &mdash; only needs basic Python and PyTorch, making it accessible while being deeply technical</li>
+          <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--space-2)">
+            <li style="display:flex;align-items:flex-start;gap:var(--space-2)"><span class="tag">8.5M+ views</span> One of the most-watched AI/ML coding tutorials on YouTube</li>
+            <li style="display:flex;align-items:flex-start;gap:var(--space-2)"><span class="tag tag--green">Creator</span> Andrej Karpathy — former Director of AI at Tesla, founding member of OpenAI</li>
+            <li style="display:flex;align-items:flex-start;gap:var(--space-2)"><span class="tag tag--yellow">Community</span> #1 recommended "build from scratch" video on r/MachineLearning and HackerNews</li>
+            <li style="display:flex;align-items:flex-start;gap:var(--space-2)"><span class="tag">Hands-on</span> Teaches transformer architecture by actually coding it — not just theory slides</li>
+            <li style="display:flex;align-items:flex-start;gap:var(--space-2)"><span class="tag tag--green">Accessible</span> Prerequisites: just basic Python and PyTorch — accessible to anyone</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Session Focus -->
-    <section class="mt-6">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#127919;</span>
-        Session Focus
-      </h2>
-      <div class="content-item">
-        <div class="content-item__title">Introduction, Bigram Language Model &amp; Tokenization Basics</div>
+    <!-- Prerequisites Explained -->
+    <section style="margin-bottom:var(--space-6)">
+      <h2 class="section-title"><span class="section-title__icon">&#128218;</span> Prerequisites Explained</h2>
+
+      <div class="content-item" style="margin-bottom:var(--space-3)">
+        <div class="content-item__title">Python Basics</div>
         <div class="content-item__body">
-          <p>This session covers the first ~23 minutes of the video (0:00 - 23:00). Karpathy sets up the entire project: what we're building, why, and the simplest possible language model as a starting point.</p>
+          <p>You need to be comfortable with Python: variables, loops, functions, lists, and dictionaries. Think of Python as the language we'll use to write our instructions to the computer. If you can write a function that takes a list of numbers and returns the sum, you're ready.</p>
+        </div>
+      </div>
+
+      <div class="content-item" style="margin-bottom:var(--space-3)">
+        <div class="content-item__title">Tensor</div>
+        <div class="content-item__body">
+          <p>A tensor is just a multi-dimensional array of numbers. A single number is a 0D tensor (a scalar). A list of numbers is a 1D tensor (a vector). A spreadsheet of numbers is a 2D tensor (a matrix). A stack of spreadsheets is a 3D tensor. That's it — tensors are just containers for numbers arranged in dimensions.</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch
+scalar = torch.tensor(42)          # 0D — a single number
+vector = torch.tensor([1, 2, 3])   # 1D — a list
+matrix = torch.tensor([[1,2],[3,4]])# 2D — a spreadsheet</code></pre>
+        </div>
+      </div>
+
+      <div class="content-item" style="margin-bottom:var(--space-3)">
+        <div class="content-item__title">PyTorch</div>
+        <div class="content-item__body">
+          <p>PyTorch is a library (a toolkit) for doing math on tensors, especially on GPUs for speed. Think of it as a supercharged calculator designed for machine learning. It handles two key things: (1) fast math on tensors, and (2) automatically computing gradients (we'll cover gradients later). We'll use <code>import torch</code> throughout.</p>
+        </div>
+      </div>
+
+      <div class="content-item" style="margin-bottom:var(--space-3)">
+        <div class="content-item__title">Character vs. Token</div>
+        <div class="content-item__body">
+          <p>A <strong>character</strong> is a single letter, digit, or symbol: <code>'a'</code>, <code>'7'</code>, <code>'!'</code>. A <strong>token</strong> is whatever unit we choose to feed into our model. In this session, we'll use characters as tokens — each character gets its own number. Real systems like GPT-4 use "subword tokens" (chunks of words), but characters keep things simple for learning.</p>
+        </div>
+      </div>
+
+      <div class="content-item" style="margin-bottom:var(--space-3)">
+        <div class="content-item__title">Probability Distribution</div>
+        <div class="content-item__body">
+          <p>Imagine you have a bag of colored marbles: 50% red, 30% blue, 20% green. That's a probability distribution — it tells you how likely each outcome is. The numbers must add up to 100% (or 1.0). In our model, we'll predict a probability distribution over the <em>next character</em>: maybe 40% chance it's 'e', 25% 'a', etc.</p>
+        </div>
+      </div>
+
+      <div class="content-item" style="margin-bottom:var(--space-3)">
+        <div class="content-item__title">Loss Function</div>
+        <div class="content-item__body">
+          <p>A loss function is a score that tells us <em>how wrong</em> our model is. Think of it like a golf score — lower is better. If our model predicts the next character should be 'z' but the actual next character is 'e', the loss will be high. If it correctly predicts 'e', the loss will be low. We use this score to improve the model.</p>
         </div>
       </div>
     </section>
 
-    <!-- Key Concepts -->
-    <section class="mt-8">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#128218;</span>
-        Key Concepts Covered
-      </h2>
-
+    <!-- Glossary -->
+    <section style="margin-bottom:var(--space-6)">
+      <h2 class="section-title"><span class="section-title__icon">&#128214;</span> Glossary of Key Terms</h2>
       <div class="content-item">
-        <div class="content-item__title">1. What is a Language Model?</div>
         <div class="content-item__body">
-          <p>At <strong>0:42</strong>, Karpathy defines the goal: a language model is a system that, given a sequence of characters (or tokens), predicts the next character. This is the core idea behind GPT, ChatGPT, and every modern LLM.</p>
-          <p class="mt-2">The key insight: <strong>language modeling is next-token prediction</strong>. The entire magic of GPT &mdash; from writing code to answering questions &mdash; emerges from training a model to predict the next token extremely well over enormous datasets.</p>
-          <p class="mt-2"><strong>Going deeper:</strong> This framing connects to Shannon's information theory (1948). The "entropy" of language &mdash; how predictable the next token is &mdash; is what language models learn to estimate. Lower perplexity = better model.</p>
+          <table style="width:100%;font-size:var(--text-sm)">
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Bigram</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A pair of consecutive items. A bigram model predicts the next character using <em>only</em> the current character. Like predicting what someone will say next based only on the last word they said.</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Cross-Entropy Loss</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A specific loss function for classification. It heavily penalizes confident wrong predictions. If your model says "99% chance it's 'z'" but the answer is 'e', cross-entropy loss will be enormous.</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Embedding</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Assigning each token a list of numbers (a vector) that represents its meaning. Like giving each word GPS coordinates in "meaning space" — similar words end up near each other.</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Gradient</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A direction that tells us how to nudge each number in our model to reduce the loss. Like a compass pointing downhill — follow the gradient to make the model less wrong.</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Logits</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Raw, unnormalized scores the model outputs before turning them into probabilities. Think of them as "votes" — higher logit = model thinks this option is more likely. We convert logits to probabilities using softmax.</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Softmax</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A function that converts a list of raw numbers (logits) into probabilities that sum to 1.0. It exponentiates each number then divides by the total, so bigger numbers get bigger probabilities.</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Token</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">The smallest unit of text the model sees. In this session, each character is a token. In production models, tokens are usually chunks of words (subwords).</td>
+            </tr>
+            <tr>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Training Loop</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">The repeated cycle of: (1) feed data to model, (2) compute loss, (3) compute gradients, (4) update model weights. Each cycle makes the model slightly better, like practicing a skill over and over.</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lesson Content -->
+    <section style="margin-bottom:var(--space-6)">
+      <h2 class="section-title"><span class="section-title__icon">&#127979;</span> Key Concepts: Building a Bigram Language Model from Scratch</h2>
+
+      <!-- What Are We Learning and Why? -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">What Are We Learning and Why?</div>
+        <div class="content-item__body">
+          <p>You know how autocomplete on your phone predicts the next word you'll type? That's <em>exactly</em> what we're building here, from scratch — except we'll start even simpler, predicting the next <strong>character</strong>.</p>
+          <p style="margin-top:var(--space-2)">Today we build a <strong>bigram language model</strong>. It's the simplest possible language model: given the current character, predict the next one. It's intentionally dumb — it only looks at one character at a time. But it introduces every fundamental concept we'll need when we build the full GPT transformer in later sessions.</p>
+          <p style="margin-top:var(--space-2)">Think of this session as building a bicycle before building a car. The bicycle teaches you about wheels, steering, and balance — concepts you'll need for the car too.</p>
         </div>
       </div>
 
-      <div class="content-item mt-4">
-        <div class="content-item__title">2. Character-Level Tokenization</div>
+      <!-- Concept 1: Tokenization -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 1: Tokenization — Turning Text into Numbers</div>
+        <div class="content-item__meta">Covered at ~3:00 in the video</div>
         <div class="content-item__body">
-          <p>At <strong>3:14</strong>, Karpathy makes a deliberate choice: instead of using BPE (byte pair encoding) like real GPT models, he works at the <strong>character level</strong>. Every unique character in the training text gets a number.</p>
-          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">chars = sorted(list(set(text)))
-vocab_size = len(chars)  # 65 unique characters
-stoi = {ch: i for i, ch in enumerate(chars)}  # string to int
-itos = {i: ch for i, ch in enumerate(chars)}  # int to string
+          <p><strong>The problem:</strong> Neural networks can only work with numbers, not text. So we need a way to convert every character into a number and back again.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The analogy:</strong> Imagine a secret codebook where each letter gets a number: A=0, B=1, C=2... That's tokenization. We build two dictionaries: one that converts characters to numbers (<code>stoi</code> — string to integer), and one that converts numbers back to characters (<code>itos</code> — integer to string).</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The code:</strong></p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Get all unique characters from our training text
+chars = sorted(list(set(text)))
+vocab_size = len(chars)  # How many unique characters exist
+
+# Build the lookup tables
+stoi = {ch: i for i, ch in enumerate(chars)}  # 'a' -> 0, 'b' -> 1, etc.
+itos = {i: ch for i, ch in enumerate(chars)}  # 0 -> 'a', 1 -> 'b', etc.
+
+# Encode: turn a string into a list of integers
 encode = lambda s: [stoi[c] for c in s]
-decode = lambda l: ''.join([itos[i] for i in l])</pre>
-          <p class="mt-2"><strong>Why character-level?</strong> It strips away the complexity of subword tokenization so you can focus on the model architecture. In production GPT, OpenAI uses ~50,000 BPE tokens; here we use 65 characters. Same principles, simpler vocabulary.</p>
-          <p class="mt-2"><strong>Real-world context:</strong> Understanding tokenization is critical. Token boundaries affect model performance &mdash; that's why GPT sometimes struggles with counting letters or arithmetic (tokens don't align with digit boundaries).</p>
-        </div>
-      </div>
+# Decode: turn a list of integers back into a string
+decode = lambda l: ''.join([itos[i] for i in l])</code></pre>
 
-      <div class="content-item mt-4">
-        <div class="content-item__title">3. The Training Dataset: Tiny Shakespeare</div>
-        <div class="content-item__body">
-          <p>At <strong>2:22</strong>, Karpathy introduces the training data: the complete works of Shakespeare (~1MB of text, about 1 million characters). This is tiny by modern standards but perfect for learning.</p>
-          <p class="mt-2"><strong>Comparison to real GPT:</strong></p>
-          <ul style="margin-top:var(--space-2);padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:1.8">
-            <li>Tiny Shakespeare: ~1M characters, 65 vocab size</li>
-            <li>GPT-2: ~40GB of text (WebText), 50,257 vocab size</li>
-            <li>GPT-3: ~570GB of filtered text, 50,257 vocab size</li>
-            <li>GPT-4: estimated trillions of tokens, likely larger vocab</li>
+          <p style="margin-top:var(--space-2)"><strong>Line by line:</strong></p>
+          <ul style="margin-top:var(--space-1)">
+            <li><code>set(text)</code> — removes duplicates, giving us each unique character once</li>
+            <li><code>sorted()</code> — puts them in alphabetical order so the mapping is consistent</li>
+            <li><code>enumerate(chars)</code> — pairs each character with its index: (0, 'a'), (1, 'b'), ...</li>
+            <li><code>stoi</code> — dictionary comprehension that maps each character to its index number</li>
+            <li><code>encode</code> — takes a string like "hello" and returns [7, 4, 11, 11, 14]</li>
+            <li><code>decode</code> — takes [7, 4, 11, 11, 14] and returns "hello"</li>
           </ul>
-          <p class="mt-2">The beauty of this tutorial is that the <strong>architecture is identical</strong> &mdash; only the scale differs.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>Why this matters:</strong> Every language model — GPT-4, Claude, Llama — starts with tokenization. The only difference is that production models use subword tokenizers (like BPE) that chunk words into pieces, while we use character-level for simplicity.</p>
         </div>
       </div>
 
-      <div class="content-item mt-4">
-        <div class="content-item__title">4. The Bigram Language Model</div>
+      <!-- Concept 2: Bigram Model -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 2: The Bigram Model — Predicting the Next Character</div>
+        <div class="content-item__meta">Covered at ~14:00 in the video</div>
         <div class="content-item__body">
-          <p>At <strong>8:50</strong>, Karpathy builds the simplest possible language model: a <strong>bigram model</strong>. It predicts the next character based only on the previous character. No context beyond one token.</p>
-          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">import torch
+          <p><strong>The idea:</strong> A bigram model looks at exactly one character and predicts what comes next. If it sees 'h', it might predict 'e' is likely (because "he" is common in English). If it sees 'q', it'll predict 'u' (because "qu" is extremely common).</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The analogy:</strong> Imagine you're playing a word game where you can only see one letter at a time through a tiny window, and you have to guess the next letter. You'd learn patterns: after 't', 'h' is common. After 'q', 'u' is almost guaranteed. That's a bigram model.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>How it works in code:</strong></p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch
 import torch.nn as nn
-from torch.nn import functional as F
 
 class BigramLanguageModel(nn.Module):
     def __init__(self, vocab_size):
         super().__init__()
+        # Each token gets a row in this table.
+        # That row contains the "votes" (logits) for what comes next.
         self.token_embedding_table = nn.Embedding(vocab_size, vocab_size)
 
     def forward(self, idx, targets=None):
+        # idx is a (B, T) tensor of token indices
+        # Look up the embedding for each token
         logits = self.token_embedding_table(idx)  # (B, T, C)
+
         if targets is None:
             loss = None
         else:
             B, T, C = logits.shape
-            logits = logits.view(B*T, C)
-            targets = targets.view(B*T)
+            logits = logits.view(B*T, C)       # Reshape for cross-entropy
+            targets = targets.view(B*T)         # Flatten targets too
             loss = F.cross_entropy(logits, targets)
-        return logits, loss
 
-    def generate(self, idx, max_new_tokens):
-        for _ in range(max_new_tokens):
-            logits, loss = self(idx)
-            logits = logits[:, -1, :]  # last time step
-            probs = F.softmax(logits, dim=-1)
-            idx_next = torch.multinomial(probs, num_samples=1)
-            idx = torch.cat((idx, idx_next), dim=1)
-        return idx</pre>
-          <p class="mt-2"><strong>Key insight at 12:30:</strong> The embedding table IS the model. Each row is a learned probability distribution over what character comes next. Row for 'h' might have high probability for 'e' (because "he", "the"). This is just a lookup table &mdash; no attention, no transformation.</p>
-          <p class="mt-2"><strong>Why start here:</strong> The bigram model produces garbage Shakespeare ("CEy lsjwP..."), but it establishes the training loop, loss function (cross-entropy), and generation method that will remain <em>exactly the same</em> as we scale up to the full transformer.</p>
+        return logits, loss</code></pre>
+
+          <p style="margin-top:var(--space-2)"><strong>Line by line:</strong></p>
+          <ul style="margin-top:var(--space-1)">
+            <li><code>nn.Embedding(vocab_size, vocab_size)</code> — Creates a lookup table with one row per character. Each row has <code>vocab_size</code> numbers representing how likely each next character is. Initially these are random.</li>
+            <li><code>logits = self.token_embedding_table(idx)</code> — For each input character, look up its row in the table. These raw scores are called "logits".</li>
+            <li><code>B, T, C</code> — B = batch size (how many sequences at once), T = time/sequence length, C = channel/vocab size (number of possible next characters).</li>
+            <li><code>F.cross_entropy(logits, targets)</code> — Compares our predictions to the actual next characters and computes how wrong we are.</li>
+          </ul>
+
+          <p style="margin-top:var(--space-2)"><strong>Common confusion:</strong> "Why is the embedding table <code>vocab_size x vocab_size</code>?" Because for each of the <code>vocab_size</code> possible input characters, we need to output a score for each of the <code>vocab_size</code> possible next characters. It's like a big grid: rows = "what I see now", columns = "what I predict comes next".</p>
         </div>
       </div>
 
-      <div class="content-item mt-4">
-        <div class="content-item__title">5. Cross-Entropy Loss &amp; Training Loop</div>
+      <!-- Concept 3: Cross-Entropy Loss -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 3: Cross-Entropy Loss — Measuring How Wrong We Are</div>
+        <div class="content-item__meta">Covered at ~22:00 in the video</div>
         <div class="content-item__body">
-          <p>At <strong>16:45</strong>, Karpathy explains the loss function. Cross-entropy loss measures how well the model's predicted probability distribution matches the actual next character.</p>
-          <p class="mt-2"><strong>The math:</strong> For a vocabulary of 65 characters, a random model would assign equal probability (1/65) to each. The expected loss is <code style="font-family:var(--font-mono);font-size:var(--text-xs);background:var(--color-bg);padding:2px 6px;border-radius:3px">-ln(1/65) &asymp; 4.17</code>. If the initial loss is near 4.17, the model hasn't learned anything yet. As training progresses, loss decreases &mdash; the model is getting better at predicting the next character.</p>
-          <p class="mt-2"><strong>Training loop (19:20):</strong></p>
-          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+          <p><strong>The intuition:</strong> We need a single number that captures "how bad are our predictions?" Cross-entropy loss does exactly this. It's designed for situations where the model outputs probabilities over multiple options (like predicting the next character from 65 possibilities).</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The analogy:</strong> Imagine a weather forecaster. If they say "90% chance of rain" and it rains, they were good (low loss). If they say "5% chance of rain" and it rains, they were terribly wrong (high loss). Cross-entropy loss works the same way — it punishes confident wrong predictions much more than uncertain ones.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The math in plain English:</strong></p>
+          <ol style="margin-top:var(--space-1)">
+            <li><strong>Step 1:</strong> Take the logits (raw scores) and run them through softmax to get probabilities that sum to 1.0</li>
+            <li><strong>Step 2:</strong> Find the probability our model assigned to the <em>correct</em> answer</li>
+            <li><strong>Step 3:</strong> Take the negative log of that probability. <code>-log(0.9) = 0.105</code> (good prediction, low loss), <code>-log(0.01) = 4.6</code> (bad prediction, high loss)</li>
+            <li><strong>Step 4:</strong> Average across all predictions in the batch</li>
+          </ol>
+
+          <p style="margin-top:var(--space-2)"><strong>What's a good loss value?</strong> At initialization (random weights), if we have 65 characters, the model assigns roughly equal probability to each: 1/65. The expected loss is <code>-log(1/65) ≈ 4.17</code>. If our trained model achieves a loss of, say, 2.5 — that's much better than random, though still far from perfect.</p>
+        </div>
+      </div>
+
+      <!-- Concept 4: Training Loop -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 4: The Training Loop — Making the Model Learn</div>
+        <div class="content-item__meta">Covered at ~30:00 in the video</div>
+        <div class="content-item__body">
+          <p><strong>The big picture:</strong> Training is just a loop where we repeatedly: (1) show the model some data, (2) measure how wrong it is, (3) figure out which direction to nudge every number in the model to be less wrong, and (4) nudge them.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The analogy:</strong> Imagine learning to throw darts blindfolded. Someone tells you "you were 3 inches too far left and 1 inch too high." You adjust. Throw again. "1 inch too far right." Adjust again. Over thousands of throws, you get closer and closer to the bullseye. That's training.</p>
+
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
 for steps in range(10000):
+    # 1. Get a random batch of training data
     xb, yb = get_batch('train')
+
+    # 2. Forward pass: get predictions and loss
     logits, loss = model(xb, yb)
-    optimizer.zero_grad(set_to_none=True)
-    loss.backward()
-    optimizer.step()</pre>
-          <p class="mt-2">This exact loop &mdash; forward pass, compute loss, backward pass, optimizer step &mdash; is used for the final GPT model too. Only the model inside changes.</p>
+
+    # 3. Backward pass: compute gradients
+    optimizer.zero_grad(set_to_none=True)  # Reset old gradients
+    loss.backward()                         # Compute new gradients
+
+    # 4. Update: nudge parameters to reduce loss
+    optimizer.step()</code></pre>
+
+          <p style="margin-top:var(--space-2)"><strong>Line by line:</strong></p>
+          <ul style="margin-top:var(--space-1)">
+            <li><code>AdamW(model.parameters(), lr=1e-3)</code> — The optimizer. Adam is a smart gradient descent algorithm. <code>lr=1e-3</code> is the learning rate: how big each nudge is. Too big = overshooting, too small = learning takes forever.</li>
+            <li><code>get_batch('train')</code> — Grabs a random chunk of training data. <code>xb</code> is the input characters, <code>yb</code> is the target (next character for each input).</li>
+            <li><code>optimizer.zero_grad()</code> — Clears gradients from the previous step. Without this, gradients would accumulate and give wrong directions.</li>
+            <li><code>loss.backward()</code> — This is the magic. PyTorch automatically computes how every single number in the model should change to reduce the loss. This is called "backpropagation".</li>
+            <li><code>optimizer.step()</code> — Actually applies those changes. Every number in the model gets nudged slightly in the direction that reduces the loss.</li>
+          </ul>
+
+          <p style="margin-top:var(--space-2)"><strong>How this connects to real AI:</strong> GPT-4, Claude, and every large language model was trained with this exact same loop structure — just with billions of parameters instead of thousands, trained on terabytes of text instead of a small file, for weeks on thousands of GPUs instead of seconds on one.</p>
         </div>
       </div>
-    </section>
 
-    <!-- Detailed Notes -->
-    <section class="mt-8">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#128221;</span>
-        Detailed Notes
-      </h2>
-      <div class="content-item">
+      <!-- Concept 5: Text Generation -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 5: Generating Text — Sampling from the Model</div>
+        <div class="content-item__meta">Covered at ~38:00 in the video</div>
         <div class="content-item__body">
-          <p><strong>0:00 - 2:20 | Introduction</strong></p>
-          <p>Karpathy explains this is a companion video to the nanoGPT repository. The goal: reproduce GPT-2 (124M parameter version) from scratch. But first, build understanding from the ground up with a tiny model on a tiny dataset.</p>
+          <p><strong>The idea:</strong> Once trained, we can generate text by repeatedly asking the model "given this character, what should come next?" and sampling from its probability distribution.</p>
 
-          <p class="mt-4"><strong>2:22 - 3:14 | Dataset setup</strong></p>
-          <p>Downloads Tiny Shakespeare (~1MB). Shows that it's just raw text &mdash; all of Shakespeare's plays concatenated. Explores the character set: 65 unique characters including uppercase, lowercase, punctuation, and newlines.</p>
+          <p style="margin-top:var(--space-2)"><strong>The analogy:</strong> Imagine a choose-your-own-adventure book, but at each page you roll weighted dice to pick the next page. Pages the model thinks are more likely get more sides of the dice. You keep rolling and following pages until you've generated a whole paragraph.</p>
 
-          <p class="mt-4"><strong>3:14 - 8:50 | Tokenization &amp; data preparation</strong></p>
-          <p>Builds encode/decode functions. Creates train/val split (90%/10%). Introduces the concept of <strong>block_size</strong> (context length) &mdash; the maximum number of tokens the model looks at. For the bigram model, block_size=1 (only one previous character). Shows how a single training example actually contains block_size+1 examples within it (each position predicts the next).</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>def generate(self, idx, max_new_tokens):
+    for _ in range(max_new_tokens):
+        # Get predictions for the current sequence
+        logits, loss = self(idx)
 
-          <p class="mt-4"><strong>8:50 - 16:45 | Building the bigram model</strong></p>
-          <p>Creates the simplest possible neural network: a single embedding table. Input token index &rarr; lookup row &rarr; output logits for next token. No hidden layers, no attention, no positional encoding. The embedding table has shape (vocab_size, vocab_size) = (65, 65). Each of the 4,225 parameters is independently learned.</p>
+        # Focus only on the LAST character's predictions
+        logits = logits[:, -1, :]  # (B, C)
 
-          <p class="mt-4"><strong>16:45 - 23:00 | Training &amp; generation</strong></p>
-          <p>Trains for 10,000 steps with AdamW optimizer. Loss drops from ~4.17 (random) to ~2.5. Generates text: it's still mostly nonsense, but you can see patterns emerging (common character pairs, some short words). This is the baseline we'll dramatically improve.</p>
+        # Convert logits to probabilities
+        probs = F.softmax(logits, dim=-1)  # (B, C)
+
+        # Randomly sample one character from the distribution
+        idx_next = torch.multinomial(probs, num_samples=1)  # (B, 1)
+
+        # Append the new character to our sequence
+        idx = torch.cat((idx, idx_next), dim=1)  # (B, T+1)
+
+    return idx</code></pre>
+
+          <p style="margin-top:var(--space-2)"><strong>Line by line:</strong></p>
+          <ul style="margin-top:var(--space-1)">
+            <li><code>logits[:, -1, :]</code> — We only care about the prediction for the last character in the sequence (the most recent one).</li>
+            <li><code>F.softmax(logits, dim=-1)</code> — Converts raw scores into probabilities. If logits are [2.0, 1.0, 0.5], softmax might give [0.59, 0.24, 0.17].</li>
+            <li><code>torch.multinomial(probs, num_samples=1)</code> — Randomly picks one index, weighted by probabilities. Higher probability = more likely to be picked. This randomness is what makes generated text different each time.</li>
+            <li><code>torch.cat((idx, idx_next), dim=1)</code> — Appends the new character to the end of our sequence, then we loop again.</li>
+          </ul>
+
+          <p style="margin-top:var(--space-2)"><strong>Why sampling and not just picking the highest probability?</strong> If we always picked the most likely next character, the output would be repetitive and boring. Sampling introduces variety — the model might pick a less likely but still plausible character, leading to more creative and diverse text.</p>
         </div>
       </div>
     </section>
 
     <!-- Practical Exercise -->
-    <section class="mt-8">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#128736;</span>
-        Practical Exercise
-      </h2>
+    <section style="margin-bottom:var(--space-6)">
+      <h2 class="section-title"><span class="section-title__icon">&#128187;</span> Practical Exercise</h2>
       <div class="content-item">
-        <div class="content-item__title">Build and Train the Bigram Model Yourself</div>
+        <div class="content-item__title">Build and Train a Bigram Character Model</div>
+        <div class="content-item__meta">Estimated time: 20-30 minutes</div>
         <div class="content-item__body">
-          <p><strong>Time:</strong> 20-30 minutes</p>
+          <p>Your task: build a bigram language model that trains on a text file and generates new text. Follow these steps:</p>
 
-          <ol style="margin-top:var(--space-3);padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:1.8">
-            <li><strong>Set up:</strong> Open a Jupyter notebook or Google Colab. Download the Tiny Shakespeare dataset: <code style="font-family:var(--font-mono);font-size:var(--text-xs);background:var(--color-bg);padding:2px 6px;border-radius:3px">wget https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt</code></li>
-            <li><strong>Implement tokenization:</strong> Build the encode/decode functions from scratch. Print encoded text to verify.</li>
-            <li><strong>Build the BigramLanguageModel:</strong> Type the code yourself (don't copy-paste). Understand each line.</li>
-            <li><strong>Train for 10,000 steps:</strong> Plot the loss curve. Does it match what Karpathy shows (~4.17 &rarr; ~2.5)?</li>
-            <li><strong>Generate 500 characters:</strong> Compare your output to Karpathy's. Notice the character-pair patterns.</li>
-            <li><strong>Experiment:</strong> Try changing the learning rate (1e-2, 1e-4). Try training for 50,000 steps. Does the loss keep decreasing? Why or why not?</li>
-          </ol>
+          <p style="margin-top:var(--space-3);font-weight:600">Starter Code:</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch
+import torch.nn as nn
+from torch.nn import functional as F
 
-          <p class="mt-4"><strong>Bonus challenge:</strong> Can the bigram model ever produce the word "the" reliably? Why is it limited? (Hint: think about what information is available at each prediction step.)</p>
+# ---------- Step 1: Load and tokenize the data ----------
+# Download: https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt
+with open('input.txt', 'r') as f:
+    text = f.read()
+
+chars = sorted(list(set(text)))
+vocab_size = len(chars)
+stoi = {ch: i for i, ch in enumerate(chars)}
+itos = {i: ch for i, ch in enumerate(chars)}
+encode = lambda s: [stoi[c] for c in s]
+decode = lambda l: ''.join([itos[i] for i in l])
+
+data = torch.tensor(encode(text), dtype=torch.long)
+
+# ---------- Step 2: Train/val split ----------
+n = int(0.9 * len(data))
+train_data = data[:n]
+val_data = data[n:]
+
+# ---------- Step 3: Batching ----------
+batch_size = 32
+block_size = 8  # context length
+
+def get_batch(split):
+    d = train_data if split == 'train' else val_data
+    ix = torch.randint(len(d) - block_size, (batch_size,))
+    x = torch.stack([d[i:i+block_size] for i in ix])
+    y = torch.stack([d[i+1:i+block_size+1] for i in ix])
+    return x, y
+
+# ---------- Step 4: Build the model ----------
+# TODO: Define BigramLanguageModel class here
+# Hint: use nn.Embedding(vocab_size, vocab_size)
+
+# ---------- Step 5: Train ----------
+# TODO: Write the training loop (try 10000 steps)
+
+# ---------- Step 6: Generate ----------
+# TODO: Generate 500 characters starting from a newline character</code></pre>
+
+          <p style="margin-top:var(--space-3);font-weight:600">Expected Output:</p>
+          <p>After 10,000 training steps, your loss should drop from ~4.17 to ~2.4-2.5. Generated text will look like gibberish but with recognizable character patterns:</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>CEr bobe sod? awicesiathend,
+Win t hise tout me sindlaves</code></pre>
+          <p style="margin-top:var(--space-1);font-size:var(--text-xs);color:var(--color-text-muted)">Not real words, but notice: spaces appear between groups of letters, common letter combos like "th" and "in" show up. The model learned basic character patterns!</p>
+
+          <p style="margin-top:var(--space-3);font-weight:600">Stretch Goals:</p>
+          <ul style="margin-top:var(--space-1)">
+            <li>Try changing the learning rate (1e-2, 1e-4) — what happens to loss?</li>
+            <li>Try training for 50,000 steps — does the text quality improve?</li>
+            <li>Count how many unique bigrams appear in the training data vs. in your generated text</li>
+          </ul>
         </div>
       </div>
     </section>
 
     <!-- Key Takeaways -->
-    <section class="mt-8">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#127942;</span>
-        Key Takeaways
-      </h2>
+    <section style="margin-bottom:var(--space-6)">
+      <h2 class="section-title"><span class="section-title__icon">&#127775;</span> Key Takeaways</h2>
       <div class="content-item">
         <div class="content-item__body">
-          <ul style="padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:2">
-            <li><strong>Language modeling = next-token prediction.</strong> This single objective, scaled up, produces everything from autocomplete to GPT-4.</li>
-            <li><strong>Tokenization maps text to numbers.</strong> Character-level is simplest; real models use BPE. Token boundaries matter for model performance.</li>
-            <li><strong>The bigram model is a lookup table.</strong> It proves the training pipeline works, but it can only model single-character dependencies.</li>
-            <li><strong>Cross-entropy loss measures prediction quality.</strong> Random = ~4.17 for 65-char vocab. Lower is better. This metric stays the same as models scale.</li>
-            <li><strong>The training loop is universal.</strong> Forward, loss, backward, step. This exact pattern is used from the simplest to the largest models.</li>
+          <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--space-3)">
+            <li style="display:flex;gap:var(--space-2)">
+              <span style="color:var(--color-accent);flex-shrink:0">&#10147;</span>
+              <span><strong>Language models predict the next token.</strong> That's it. Whether it's a bigram model with 4,000 parameters or GPT-4 with 1.7 trillion, the core task is identical: given what came before, predict what comes next.</span>
+            </li>
+            <li style="display:flex;gap:var(--space-2)">
+              <span style="color:var(--color-accent);flex-shrink:0">&#10147;</span>
+              <span><strong>Tokenization converts text to numbers and back.</strong> Every AI model needs this bridge between human-readable text and math. Our character-level tokenizer is simple; production systems use subword tokenizers that are more efficient but work on the same principle.</span>
+            </li>
+            <li style="display:flex;gap:var(--space-2)">
+              <span style="color:var(--color-accent);flex-shrink:0">&#10147;</span>
+              <span><strong>The training loop is universal.</strong> Forward pass, compute loss, backward pass, update weights. This same 4-step cycle trains every neural network ever built — from our tiny bigram model to the largest frontier models.</span>
+            </li>
+            <li style="display:flex;gap:var(--space-2)">
+              <span style="color:var(--color-success);flex-shrink:0">&#9733;</span>
+              <span><strong>Aha moment:</strong> The bigram model's embedding table IS the entire model — it's literally a lookup table of "given character X, here are the scores for what comes next." The magic of transformers (coming in Session 2) is replacing this simple lookup with a mechanism that can look at ALL previous characters, not just the last one.</span>
+            </li>
           </ul>
         </div>
       </div>
     </section>
 
     <!-- What's Next -->
-    <section class="mt-8">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#128640;</span>
-        What's Next
-      </h2>
+    <section style="margin-bottom:var(--space-6)">
+      <h2 class="section-title"><span class="section-title__icon">&#128640;</span> What's Next</h2>
       <div class="content-item">
         <div class="content-item__body">
-          <p><strong>Session 2:</strong> The self-attention mechanism &mdash; the mathematical trick that allows the model to look at <em>all</em> previous tokens, not just the last one. This is the core innovation of the Transformer architecture and what makes GPT possible.</p>
-          <p class="mt-2">Karpathy will build self-attention from scratch using matrix multiplication, showing exactly how "queries", "keys", and "values" work. This is the most important ~25 minutes of the entire video.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Session Roadmap -->
-    <section class="mt-8">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#128506;</span>
-        Session Roadmap
-      </h2>
-      <div class="content-item">
-        <div class="content-item__body">
-          <ol style="padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:2">
-            <li style="color:var(--color-accent);font-weight:600">Session 1: Introduction, bigram language model, tokenization basics &#10003;</li>
-            <li>Session 2: Self-attention mechanism &mdash; the mathematical trick</li>
-            <li>Session 3: Multi-head attention and transformer block architecture</li>
-            <li>Session 4: Building the full GPT model &mdash; layer norms, residual connections, feedforward</li>
-            <li>Session 5: Training loop, generation, and scaling considerations</li>
-          </ol>
+          <p><strong>Session 2: Self-Attention — The Mathematical Trick That Powers Transformers</strong></p>
+          <p style="margin-top:var(--space-2);color:var(--color-text-secondary)">Our bigram model has a fatal flaw: it can only look at one character at a time. The word "the" should be easy to predict, but our model has no idea what came before the current character. In the next session, we'll learn about <strong>self-attention</strong> — the breakthrough mechanism that lets the model look at ALL previous characters and decide which ones matter most for predicting the next one. This is the core idea behind every transformer, including GPT, Claude, and every modern LLM.</p>
+          <div style="margin-top:var(--space-3)">
+            <span class="tag">Session 2 of 5</span>
+            <span class="tag tag--yellow">Core concept: Attention</span>
+          </div>
         </div>
       </div>
     </section>
