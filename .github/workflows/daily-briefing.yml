@@ -51,9 +51,29 @@ jobs:
           name: stock-trader-output
           path: output/stock-trader/
 
+  generate-market-news:
+    name: Market-Moving News
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Generate Market-Moving News
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: bash scripts/generate-market-news.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-news-output
+          path: output/market-news/
+
   publish:
     name: Publish Results
-    needs: [generate-ai-learning, generate-stock-trader]
+    needs: [generate-ai-learning, generate-stock-trader, generate-market-news]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -72,6 +92,12 @@ jobs:
         with:
           name: stock-trader-output
           path: output/stock-trader/
+
+      - name: Download Market News output
+        uses: actions/download-artifact@v4
+        with:
+          name: market-news-output
+          path: output/market-news/
 
       - name: Update manifest
         run: bash scripts/update-manifest.sh

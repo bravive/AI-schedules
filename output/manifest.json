@@ -7,6 +7,10 @@
     "stock-trader": {
       "date": "2026-03-11",
       "path": "output/stock-trader/2026-03-11.html"
+    },
+    "market-news": {
+      "date": "2026-03-11",
+      "path": "output/market-news/2026-03-11.html"
     }
   },
   "archive": [
@@ -22,6 +26,11 @@
           "type": "stock-trader",
           "label": "Stock Trader",
           "path": "output/stock-trader/2026-03-11.html"
+        },
+        {
+          "type": "market-news",
+          "label": "Market-Moving News",
+          "path": "output/market-news/2026-03-11.html"
         }
       ]
     }

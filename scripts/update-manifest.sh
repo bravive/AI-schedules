@@ -29,6 +29,11 @@ if [ -f "$OUTPUT_DIR/stock-trader/$TODAY.html" ]; then
     '. + [{"type":"stock-trader","label":"Stock Trader","path":$path}]')
 fi
 
+if [ -f "$OUTPUT_DIR/market-news/$TODAY.html" ]; then
+  TASKS_JSON=$(echo "$TASKS_JSON" | jq --arg path "output/market-news/$TODAY.html" \
+    '. + [{"type":"market-news","label":"Market-Moving News","path":$path}]')
+fi
+
 # Update latest pointers
 MANIFEST=$(cat "$MANIFEST_FILE")
 
@@ -42,6 +47,12 @@ if [ -f "$OUTPUT_DIR/stock-trader/$TODAY.html" ]; then
   MANIFEST=$(echo "$MANIFEST" | jq --arg date "$TODAY" \
     --arg path "output/stock-trader/$TODAY.html" \
     '.latest["stock-trader"] = {"date":$date,"path":$path}')
+fi
+
+if [ -f "$OUTPUT_DIR/market-news/$TODAY.html" ]; then
+  MANIFEST=$(echo "$MANIFEST" | jq --arg date "$TODAY" \
+    --arg path "output/market-news/$TODAY.html" \
+    '.latest["market-news"] = {"date":$date,"path":$path}')
 fi
 
 # Add to archive (prepend, avoid duplicates for same date)
