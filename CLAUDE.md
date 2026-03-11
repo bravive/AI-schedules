@@ -43,6 +43,22 @@ When the user says `/generate today`:
    - Update `output/manifest.json` via `scripts/update-manifest.sh`
 4. Commit and push the generated artifacts
 
+## Testing
+
+- **Always run tests before pushing:** `node tests/validate-html.js`
+- Tests validate:
+  - All required files exist (prompts, scripts, outputs, CSS, workflow)
+  - Homepage has all 3 task cards with bullet summaries and correct links
+  - Each output page has proper HTML structure (DOCTYPE, meta, header, footer, nav-back)
+  - AI Learning pages have YouTube links, session progress, key concepts, exercises
+  - Stock Trader pages have stock table, symbols, market overview, disclaimer
+  - Market News pages have market mood, 10 news stories, crypto section, sentiment indicators
+  - manifest.json has correct structure and all file references are valid
+  - progress.json has valid video tracking with YouTube URLs and selection reasons
+  - All generation scripts have proper shebang, strict mode, and API key references
+  - Workflow includes all 3 task jobs
+- If tests fail, fix the issues before pushing
+
 ## UI / Frontend
 
 - Use the shared design system (`shared/css/style.css`) for all pages
