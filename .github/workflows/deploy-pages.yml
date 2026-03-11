@@ -3,10 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main, master]
-    paths:
-      - 'index.html'
-      - 'output/**'
-      - 'shared/**'
   workflow_run:
     workflows: ["Daily AI Briefing"]
     types: [completed]
@@ -23,6 +19,8 @@ concurrency:
 
 jobs:
   deploy:
+    # Skip deploy if triggered by a failed daily briefing run
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
