@@ -1,0 +1,29 @@
+{
+  "latest": {
+    "ai-learning-engineer": {
+      "date": "2026-03-11",
+      "path": "output/ai-learning-engineer/2026-03-11.html"
+    },
+    "stock-trader": {
+      "date": "2026-03-11",
+      "path": "output/stock-trader/2026-03-11.html"
+    }
+  },
+  "archive": [
+    {
+      "date": "2026-03-11",
+      "tasks": [
+        {
+          "type": "ai-learning-engineer",
+          "label": "AI Learning Engineer",
+          "path": "output/ai-learning-engineer/2026-03-11.html"
+        },
+        {
+          "type": "stock-trader",
+          "label": "Stock Trader",
+          "path": "output/stock-trader/2026-03-11.html"
+        }
+      ]
+    }
+  ]
+}

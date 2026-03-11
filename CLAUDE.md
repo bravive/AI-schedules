@@ -28,6 +28,21 @@
 4. Update `scripts/update-manifest.sh` to include the new task
 5. Add a card to `index.html`
 
+## Commands
+
+### `/generate today`
+When the user says `/generate today`:
+1. Check if today's artifacts already exist in `output/<task-name>/YYYY-MM-DD.html`
+2. If they exist, skip generation and inform the user
+3. If they don't exist, generate all task artifacts:
+   - Read each task's `prompt.md`
+   - Generate the HTML content following the prompt instructions
+   - Wrap the content in the standard page template (header, nav-back, footer) using `shared/css/style.css`
+   - Save to `output/<task-name>/YYYY-MM-DD.html`
+   - Copy to `output/<task-name>/latest.html`
+   - Update `output/manifest.json` via `scripts/update-manifest.sh`
+4. Commit and push the generated artifacts
+
 ## UI / Frontend
 
 - Use the shared design system (`shared/css/style.css`) for all pages
