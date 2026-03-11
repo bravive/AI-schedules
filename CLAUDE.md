@@ -19,7 +19,7 @@
 
 | Task | Folder | Description |
 |------|--------|-------------|
-| **AI Learning Engineer** | `tasks/ai-learning-engineer/` | Daily AI learning digest with YouTube video sessions, key concepts, exercises |
+| **AI Learning Engineer** | `tasks/ai-learning-engineer/` | Course-style lessons from YouTube videos: prerequisites, glossary, concept teaching with analogies, code walkthroughs, exercises |
 | **Stock Trader** | `tasks/stock-trader/` | Pre-market analysis with top stocks, market overview, disclaimers |
 | **Market News** | `tasks/market-news/` | Market mood, 10+ news stories, crypto section, sentiment indicators |
 
@@ -59,7 +59,7 @@ Release workflow — runs tests, commits changes, and pushes to remote.
   - **CSS system (9):** Required design system classes present
   - **Homepage (13):** 3 task cards with bullet summaries, sidebar groups, JS functions (showDashboard, loadEntry, openTask), manifest fetch, iframe nav-back
   - **Output pages (36):** HTML structure per task (DOCTYPE, meta, CSS, header, footer, nav-back, date matching, balanced tags, >200 chars body)
-  - **AI Learning specific (7):** YouTube links, session progress format, key concepts, exercises, roadmap
+  - **AI Learning specific (7):** YouTube links, session progress format, key concepts, exercises, roadmap, prerequisites, glossary
   - **Stock Trader specific (6):** Stock table, 5+ stock symbols, market overview, disclaimer, wide container
   - **Market News specific (6):** Market mood, 8+ news stories, crypto section, disclaimer, sentiment indicators
   - **Manifest (8):** Correct structure, all 3 task types in latest, referenced files exist
