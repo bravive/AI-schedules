@@ -1,0 +1,49 @@
+name: Auto-Merge Claude Branches
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Claude branch to merge (e.g. claude/feature-xyz)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Merge Claude branch to main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine branch
+        id: branch
+        run: |
+          if [ -n "${{ inputs.branch }}" ]; then
+            echo "name=${{ inputs.branch }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=${GITHUB_REF#refs/heads/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge claude branch into main
+        run: |
+          BRANCH="${{ steps.branch.outputs.name }}"
+          echo "Merging $BRANCH into main..."
+
+          git fetch origin "$BRANCH"
+          git merge "origin/$BRANCH" --no-ff -m "Auto-merge $BRANCH into main"
+          git push origin main
