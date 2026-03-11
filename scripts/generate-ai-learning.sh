@@ -81,7 +81,7 @@ RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
     --arg user "$USER_MESSAGE" \
     '{
       model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
+      max_tokens: 8192,
       system: $system,
       messages: [{role: "user", content: $user}]
     }')")
