@@ -1,0 +1,76 @@
+{
+  "current_video": {
+    "title": "Let's build GPT: from scratch, in code, spelled out",
+    "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY",
+    "channel": "Andrej Karpathy",
+    "duration": "1h56m",
+    "views": "8.5M+",
+    "why_selected": [
+      "8.5M+ views — one of the most-watched AI/ML coding tutorials on YouTube",
+      "Andrej Karpathy is former Director of AI at Tesla and founding member of OpenAI",
+      "#1 recommended 'build from scratch' video on r/MachineLearning and HackerNews",
+      "Teaches transformer architecture by actually coding it — not just theory slides",
+      "Prerequisites: just basic Python and PyTorch — accessible to anyone"
+    ],
+    "total_sessions": 5,
+    "current_session": 1,
+    "session_plan": [
+      "Session 1: Introduction, bigram language model, tokenization basics",
+      "Session 2: Self-attention mechanism — the mathematical trick",
+      "Session 3: Multi-head attention and transformer block architecture",
+      "Session 4: Building the full GPT model — layer norms, residual connections, feedforward",
+      "Session 5: Training loop, generation, and scaling considerations"
+    ]
+  },
+  "completed_videos": [],
+  "topic_queue": [
+    {
+      "title": "But what is a neural network? | Chapter 1, Deep learning",
+      "url": "https://www.youtube.com/watch?v=aircAruvnKk",
+      "channel": "3Blue1Brown",
+      "duration": "19m",
+      "views": "18M+",
+      "why_selected": [
+        "18M+ views — the most-watched neural network explainer on YouTube",
+        "3Blue1Brown's visual math approach is universally praised for building intuition",
+        "Consistently ranked #1 'best intro to neural networks' across Reddit, Twitter, and course syllabi"
+      ]
+    },
+    {
+      "title": "Attention in transformers, visually explained | Chapter 6, Deep Learning",
+      "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
+      "channel": "3Blue1Brown",
+      "duration": "26m",
+      "views": "4M+",
+      "why_selected": [
+        "4M+ views in under a year — fastest-growing transformer explainer video",
+        "Fills the gap between Karpathy's code-first approach and mathematical intuition",
+        "Visual animations make attention mechanism click in a way no blog post can"
+      ]
+    },
+    {
+      "title": "Coding a Transformer from scratch on PyTorch",
+      "url": "https://www.youtube.com/watch?v=ISNdQcPhsts",
+      "channel": "Umar Jamil",
+      "duration": "2h05m",
+      "views": "1.2M+",
+      "why_selected": [
+        "1.2M+ views — top result for 'code transformer from scratch' on YouTube",
+        "Covers the full original 'Attention Is All You Need' paper implementation",
+        "Highly recommended on r/learnmachinelearning as the best Transformer coding tutorial after Karpathy"
+      ]
+    },
+    {
+      "title": "Building a RAG application from scratch",
+      "url": "https://www.youtube.com/watch?v=BrsocJb-fAo",
+      "channel": "AI Jason",
+      "duration": "24m",
+      "views": "350K+",
+      "why_selected": [
+        "Top-viewed RAG tutorial on YouTube — practical, hands-on approach",
+        "Covers the complete RAG pipeline: chunking, embedding, retrieval, generation",
+        "RAG is the #1 most in-demand AI engineering skill for production applications"
+      ]
+    }
+  ]
+}
