@@ -146,6 +146,12 @@ assert(index.includes("fetch('output/manifest.json')"), 'Fetches manifest.json')
 // iframe for content
 assert(index.includes('id="content-frame"'), 'Has content iframe');
 
+// iframe nav-back interception (prevents nested sidebar bug)
+assert(index.includes('content-frame') && index.includes("addEventListener('load'"), 'Has iframe load event listener for nav-back interception');
+assert(index.includes('contentDocument'), 'Iframe handler accesses contentDocument');
+assert(index.includes("querySelector('.nav-back')") || index.includes('querySelector(\'.nav-back\')'), 'Iframe handler finds nav-back links');
+assert(index.includes('preventDefault'), 'Iframe handler prevents default nav-back navigation');
+
 // ─── Test: Output pages - common structure ────────────────────────────────────
 
 const taskPages = [
