@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# AI Learning Engineer — Daily Digest Generator
-# Runs via GitHub Actions, calls Claude API to generate daily content
+# AI Learning Engineer — YouTube Deep-Dive Session Generator
+# Runs via GitHub Actions, calls Claude API to generate daily session content
+# Reads progress.json to know which video/session to generate, updates it after
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -11,13 +12,15 @@ OUTPUT_DIR="$ROOT_DIR/output/ai-learning-engineer"
 OUTPUT_FILE="$OUTPUT_DIR/$TODAY.html"
 LATEST_FILE="$OUTPUT_DIR/latest.html"
 PROMPT_FILE="$ROOT_DIR/tasks/ai-learning-engineer/prompt.md"
+PROGRESS_FILE="$ROOT_DIR/tasks/ai-learning-engineer/progress.json"
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "Generating AI Learning Engineer digest for $TODAY..."
+echo "Generating AI Learning Engineer session for $TODAY..."
 
-# Read the prompt
+# Read the prompt and progress
 SYSTEM_PROMPT=$(cat "$PROMPT_FILE")
+PROGRESS=$(cat "$PROGRESS_FILE")
 
 # Build the HTML template wrapper
 read -r -d '' HTML_PREFIX << 'HTMLEOF' || true
@@ -40,7 +43,7 @@ read -r -d '' HTML_PREFIX << 'HTMLEOF' || true
         <div class="card__icon card__icon--ai" style="width:48px;height:48px;font-size:1.5rem;">&#9883;</div>
         <div>
           <h1 class="site-header__title">AI Learning Engineer</h1>
-          <p class="site-header__subtitle">Your 10-minute daily AI briefing</p>
+          <p class="site-header__subtitle">YouTube deep-dive learning sessions</p>
         </div>
       </div>
       <div class="site-header__date">DATE_PLACEHOLDER</div>
@@ -59,8 +62,15 @@ HTMLEOF
 HTML_PREFIX="${HTML_PREFIX//DATE_PLACEHOLDER/$TODAY}"
 HTML_SUFFIX="${HTML_SUFFIX//DATE_PLACEHOLDER/$TODAY}"
 
-# Call Claude API
-USER_MESSAGE="Today is $TODAY. Generate today's AI Learning Engineer daily digest. Output ONLY the inner HTML content (the sections between header and footer — do not include <!DOCTYPE>, <html>, <head>, <body>, or wrapper tags). Use CSS classes from the shared design system (content-item, content-item__title, content-item__body, tag, section-title, etc.)."
+# Call Claude API with progress context
+USER_MESSAGE="Today is $TODAY.
+
+PROGRESS CONTEXT:
+$PROGRESS
+
+Generate today's AI Learning Engineer session based on the progress above. Output ONLY the inner HTML content (the sections between header and footer — do not include <!DOCTYPE>, <html>, <head>, <body>, or wrapper tags). Use CSS classes from the shared design system (content-item, content-item__title, content-item__body, tag, section-title, confidence, confidence__bar, confidence__fill, etc.).
+
+Include the YouTube video link as a clickable anchor tag. Show a progress bar for sessions completed vs total."
 
 RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
@@ -97,3 +107,47 @@ cp "$OUTPUT_FILE" "$LATEST_FILE"
 
 echo "Generated: $OUTPUT_FILE"
 echo "Updated:   $LATEST_FILE"
+
+# Advance progress for next run
+CURRENT_SESSION=$(echo "$PROGRESS" | jq '.current_video.current_session')
+TOTAL_SESSIONS=$(echo "$PROGRESS" | jq '.current_video.total_sessions')
+NEXT_SESSION=$((CURRENT_SESSION + 1))
+
+if [ "$NEXT_SESSION" -gt "$TOTAL_SESSIONS" ]; then
+  # Video complete — move to next in queue
+  echo "Video complete. Moving to next in queue..."
+  COMPLETED_VIDEO=$(echo "$PROGRESS" | jq '.current_video | {title, url, channel, duration, views}')
+  NEXT_VIDEO=$(echo "$PROGRESS" | jq '.topic_queue[0] // empty')
+
+  if [ -n "$NEXT_VIDEO" ] && [ "$NEXT_VIDEO" != "null" ]; then
+    # Estimate sessions for next video (1 session per 20 min, minimum 1)
+    NEXT_DURATION=$(echo "$NEXT_VIDEO" | jq -r '.duration')
+    HOURS=$(echo "$NEXT_DURATION" | grep -oP '(\d+)h' | grep -oP '\d+' || echo "0")
+    MINS=$(echo "$NEXT_DURATION" | grep -oP '(\d+)m' | grep -oP '\d+' || echo "0")
+    TOTAL_MINS=$(( HOURS * 60 + MINS ))
+    EST_SESSIONS=$(( (TOTAL_MINS + 19) / 20 ))
+    [ "$EST_SESSIONS" -lt 1 ] && EST_SESSIONS=1
+
+    PROGRESS=$(echo "$PROGRESS" | jq \
+      --argjson completed "$COMPLETED_VIDEO" \
+      --argjson next "$NEXT_VIDEO" \
+      --argjson sessions "$EST_SESSIONS" \
+      '.completed_videos += [$completed] |
+       .current_video = ($next + {"total_sessions": $sessions, "current_session": 1, "session_plan": []}) |
+       .topic_queue = .topic_queue[1:]')
+  else
+    # Queue empty — mark completed
+    PROGRESS=$(echo "$PROGRESS" | jq \
+      --argjson completed "$COMPLETED_VIDEO" \
+      '.completed_videos += [$completed] |
+       .current_video.current_session = .current_video.total_sessions')
+  fi
+else
+  # Advance to next session of same video
+  PROGRESS=$(echo "$PROGRESS" | jq \
+    --argjson next "$NEXT_SESSION" \
+    '.current_video.current_session = $next')
+fi
+
+echo "$PROGRESS" | jq '.' > "$PROGRESS_FILE"
+echo "Progress updated: session $CURRENT_SESSION -> next run"

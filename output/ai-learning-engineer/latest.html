@@ -17,190 +17,279 @@
         <div class="card__icon card__icon--ai" style="width:48px;height:48px;font-size:1.5rem;">&#9883;</div>
         <div>
           <h1 class="site-header__title">AI Learning Engineer</h1>
-          <p class="site-header__subtitle">Your 10-minute daily AI briefing</p>
+          <p class="site-header__subtitle">YouTube deep-dive learning sessions</p>
         </div>
       </div>
       <div class="site-header__date">2026-03-11 &middot; Wednesday</div>
     </header>
 
-    <!-- Section 1: AI Productivity Tip -->
+    <!-- Video Info -->
     <section class="mt-6">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#9889;</span>
-        AI Productivity Tip of the Day
-      </h2>
-      <div class="content-item">
-        <div class="content-item__title">Use Structured Outputs to Eliminate Post-Processing</div>
+      <div class="content-item" style="border-left:3px solid var(--color-accent)">
         <div class="content-item__body">
-          <p>Most developers still parse free-text LLM responses with regex or string splitting. Instead, use <strong>structured output / JSON mode</strong> to get exactly the shape you need.</p>
-
-          <p class="mt-4"><strong>Before:</strong></p>
-          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">response = client.messages.create(
-    model="claude-sonnet-4-20250514",
-    messages=[{"role": "user", "content": "Extract name and email from: ..."}]
-)
-# Then manually parse response.content[0].text with regex...</pre>
-
-          <p class="mt-4"><strong>After:</strong></p>
-          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">response = client.messages.create(
-    model="claude-sonnet-4-20250514",
-    messages=[{"role": "user", "content": "Extract name and email from: ..."}],
-    tools=[{
-        "name": "extract_contact",
-        "description": "Extract contact info",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "name": {"type": "string"},
-                "email": {"type": "string", "format": "email"}
-            },
-            "required": ["name", "email"]
-        }
-    }],
-    tool_choice={"type": "tool", "name": "extract_contact"}
-)
-contact = response.content[0].input  # Already structured!</pre>
-
-          <p class="mt-4">This pattern works for any extraction, classification, or structured generation task. You get guaranteed schema compliance, no parsing bugs, and cleaner code.</p>
+          <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap">
+            <span style="font-size:1.5rem">&#9654;</span>
+            <div>
+              <div style="font-size:var(--text-lg);font-weight:600;color:var(--color-text)">
+                <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" rel="noopener" style="color:var(--color-accent);text-decoration:none">
+                  Let's build GPT: from scratch, in code, spelled out
+                </a>
+              </div>
+              <div style="font-size:var(--text-sm);color:var(--color-text-muted);margin-top:var(--space-1)">
+                <strong>Andrej Karpathy</strong> &middot; 1h 56m &middot; 8.5M+ views
+              </div>
+            </div>
+          </div>
+          <div class="mt-4" style="display:flex;align-items:center;gap:var(--space-3)">
+            <span class="tag tag--green">Session 1 of 5</span>
+            <span class="tag">Bigram Model &amp; Tokenization</span>
+          </div>
+          <div class="mt-4">
+            <div class="confidence">
+              <div class="confidence__bar"><div class="confidence__fill" style="width:20%;background:var(--color-accent)"></div></div>
+              <span class="confidence__label">1/5 sessions</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 2: RAG Deep Dive -->
+    <!-- Why This Video -->
+    <section class="mt-6">
+      <h2 class="section-title">
+        <span class="section-title__icon">&#11088;</span>
+        Why This Video?
+      </h2>
+      <div class="content-item">
+        <div class="content-item__body">
+          <ul style="padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:2">
+            <li><strong>8.5M+ views</strong> &mdash; one of the most-watched AI/ML coding tutorials on all of YouTube</li>
+            <li><strong>Andrej Karpathy</strong> is former Director of AI at Tesla and founding member of OpenAI &mdash; he literally built the systems this video teaches</li>
+            <li><strong>#1 recommended</strong> "build from scratch" video on r/MachineLearning, HackerNews, and countless AI learning threads</li>
+            <li><strong>Code-first approach</strong> &mdash; you don't just learn theory, you type a working GPT and understand every line</li>
+            <li><strong>Low prerequisites</strong> &mdash; only needs basic Python and PyTorch, making it accessible while being deeply technical</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Session Focus -->
+    <section class="mt-6">
+      <h2 class="section-title">
+        <span class="section-title__icon">&#127919;</span>
+        Session Focus
+      </h2>
+      <div class="content-item">
+        <div class="content-item__title">Introduction, Bigram Language Model &amp; Tokenization Basics</div>
+        <div class="content-item__body">
+          <p>This session covers the first ~23 minutes of the video (0:00 - 23:00). Karpathy sets up the entire project: what we're building, why, and the simplest possible language model as a starting point.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Concepts -->
     <section class="mt-8">
       <h2 class="section-title">
         <span class="section-title__icon">&#128218;</span>
-        RAG Deep Dive
+        Key Concepts Covered
       </h2>
+
       <div class="content-item">
-        <div class="content-item__title">Contextual Retrieval: Boosting RAG Accuracy with Chunk Context</div>
-        <div class="tags mt-2 mb-4">
-          <span class="tag">RAG</span>
-          <span class="tag">Chunking</span>
-          <span class="tag">Retrieval</span>
-        </div>
+        <div class="content-item__title">1. What is a Language Model?</div>
         <div class="content-item__body">
-          <p>Standard RAG chunks documents into fragments, but each chunk loses the context of <em>where</em> it came from. A chunk saying "Revenue grew 15%" is useless without knowing which company and quarter it refers to.</p>
+          <p>At <strong>0:42</strong>, Karpathy defines the goal: a language model is a system that, given a sequence of characters (or tokens), predicts the next character. This is the core idea behind GPT, ChatGPT, and every modern LLM.</p>
+          <p class="mt-2">The key insight: <strong>language modeling is next-token prediction</strong>. The entire magic of GPT &mdash; from writing code to answering questions &mdash; emerges from training a model to predict the next token extremely well over enormous datasets.</p>
+          <p class="mt-2"><strong>Going deeper:</strong> This framing connects to Shannon's information theory (1948). The "entropy" of language &mdash; how predictable the next token is &mdash; is what language models learn to estimate. Lower perplexity = better model.</p>
+        </div>
+      </div>
 
-          <p class="mt-4"><strong>Contextual Retrieval</strong> solves this by prepending a short context summary to each chunk before embedding:</p>
+      <div class="content-item mt-4">
+        <div class="content-item__title">2. Character-Level Tokenization</div>
+        <div class="content-item__body">
+          <p>At <strong>3:14</strong>, Karpathy makes a deliberate choice: instead of using BPE (byte pair encoding) like real GPT models, he works at the <strong>character level</strong>. Every unique character in the training text gets a number.</p>
+          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">chars = sorted(list(set(text)))
+vocab_size = len(chars)  # 65 unique characters
+stoi = {ch: i for i, ch in enumerate(chars)}  # string to int
+itos = {i: ch for i, ch in enumerate(chars)}  # int to string
+encode = lambda s: [stoi[c] for c in s]
+decode = lambda l: ''.join([itos[i] for i in l])</pre>
+          <p class="mt-2"><strong>Why character-level?</strong> It strips away the complexity of subword tokenization so you can focus on the model architecture. In production GPT, OpenAI uses ~50,000 BPE tokens; here we use 65 characters. Same principles, simpler vocabulary.</p>
+          <p class="mt-2"><strong>Real-world context:</strong> Understanding tokenization is critical. Token boundaries affect model performance &mdash; that's why GPT sometimes struggles with counting letters or arithmetic (tokens don't align with digit boundaries).</p>
+        </div>
+      </div>
 
-          <ol style="margin-top:var(--space-3);padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:1.8">
-            <li><strong>Chunk</strong> your document normally (e.g., 512 tokens with overlap)</li>
-            <li><strong>For each chunk</strong>, send the full document + chunk to an LLM asking: "Give a short context (2-3 sentences) for this chunk within the document"</li>
-            <li><strong>Prepend</strong> the context to the chunk before embedding</li>
-            <li><strong>Store</strong> both the contextualized embedding and original chunk</li>
-          </ol>
+      <div class="content-item mt-4">
+        <div class="content-item__title">3. The Training Dataset: Tiny Shakespeare</div>
+        <div class="content-item__body">
+          <p>At <strong>2:22</strong>, Karpathy introduces the training data: the complete works of Shakespeare (~1MB of text, about 1 million characters). This is tiny by modern standards but perfect for learning.</p>
+          <p class="mt-2"><strong>Comparison to real GPT:</strong></p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:1.8">
+            <li>Tiny Shakespeare: ~1M characters, 65 vocab size</li>
+            <li>GPT-2: ~40GB of text (WebText), 50,257 vocab size</li>
+            <li>GPT-3: ~570GB of filtered text, 50,257 vocab size</li>
+            <li>GPT-4: estimated trillions of tokens, likely larger vocab</li>
+          </ul>
+          <p class="mt-2">The beauty of this tutorial is that the <strong>architecture is identical</strong> &mdash; only the scale differs.</p>
+        </div>
+      </div>
 
-          <p class="mt-4"><strong>Results:</strong> Anthropic's benchmarks show this reduces retrieval failures by <strong>49%</strong> when combined with hybrid search (BM25 + embeddings). The context generation step adds cost but dramatically improves precision on ambiguous queries.</p>
+      <div class="content-item mt-4">
+        <div class="content-item__title">4. The Bigram Language Model</div>
+        <div class="content-item__body">
+          <p>At <strong>8:50</strong>, Karpathy builds the simplest possible language model: a <strong>bigram model</strong>. It predicts the next character based only on the previous character. No context beyond one token.</p>
+          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">import torch
+import torch.nn as nn
+from torch.nn import functional as F
 
-          <p class="mt-4"><strong>When to use:</strong> Long documents where chunks are ambiguous out of context — financial reports, legal docs, technical manuals, multi-topic articles.</p>
+class BigramLanguageModel(nn.Module):
+    def __init__(self, vocab_size):
+        super().__init__()
+        self.token_embedding_table = nn.Embedding(vocab_size, vocab_size)
 
-          <p class="mt-4"><strong>Pro tip:</strong> Cache the full document in a prompt cache to reduce the per-chunk context generation cost by up to 90%.</p>
+    def forward(self, idx, targets=None):
+        logits = self.token_embedding_table(idx)  # (B, T, C)
+        if targets is None:
+            loss = None
+        else:
+            B, T, C = logits.shape
+            logits = logits.view(B*T, C)
+            targets = targets.view(B*T)
+            loss = F.cross_entropy(logits, targets)
+        return logits, loss
+
+    def generate(self, idx, max_new_tokens):
+        for _ in range(max_new_tokens):
+            logits, loss = self(idx)
+            logits = logits[:, -1, :]  # last time step
+            probs = F.softmax(logits, dim=-1)
+            idx_next = torch.multinomial(probs, num_samples=1)
+            idx = torch.cat((idx, idx_next), dim=1)
+        return idx</pre>
+          <p class="mt-2"><strong>Key insight at 12:30:</strong> The embedding table IS the model. Each row is a learned probability distribution over what character comes next. Row for 'h' might have high probability for 'e' (because "he", "the"). This is just a lookup table &mdash; no attention, no transformation.</p>
+          <p class="mt-2"><strong>Why start here:</strong> The bigram model produces garbage Shakespeare ("CEy lsjwP..."), but it establishes the training loop, loss function (cross-entropy), and generation method that will remain <em>exactly the same</em> as we scale up to the full transformer.</p>
+        </div>
+      </div>
+
+      <div class="content-item mt-4">
+        <div class="content-item__title">5. Cross-Entropy Loss &amp; Training Loop</div>
+        <div class="content-item__body">
+          <p>At <strong>16:45</strong>, Karpathy explains the loss function. Cross-entropy loss measures how well the model's predicted probability distribution matches the actual next character.</p>
+          <p class="mt-2"><strong>The math:</strong> For a vocabulary of 65 characters, a random model would assign equal probability (1/65) to each. The expected loss is <code style="font-family:var(--font-mono);font-size:var(--text-xs);background:var(--color-bg);padding:2px 6px;border-radius:3px">-ln(1/65) &asymp; 4.17</code>. If the initial loss is near 4.17, the model hasn't learned anything yet. As training progresses, loss decreases &mdash; the model is getting better at predicting the next character.</p>
+          <p class="mt-2"><strong>Training loop (19:20):</strong></p>
+          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+
+for steps in range(10000):
+    xb, yb = get_batch('train')
+    logits, loss = model(xb, yb)
+    optimizer.zero_grad(set_to_none=True)
+    loss.backward()
+    optimizer.step()</pre>
+          <p class="mt-2">This exact loop &mdash; forward pass, compute loss, backward pass, optimizer step &mdash; is used for the final GPT model too. Only the model inside changes.</p>
         </div>
       </div>
     </section>
 
-    <!-- Section 3: Cutting-Edge Tech -->
+    <!-- Detailed Notes -->
+    <section class="mt-8">
+      <h2 class="section-title">
+        <span class="section-title__icon">&#128221;</span>
+        Detailed Notes
+      </h2>
+      <div class="content-item">
+        <div class="content-item__body">
+          <p><strong>0:00 - 2:20 | Introduction</strong></p>
+          <p>Karpathy explains this is a companion video to the nanoGPT repository. The goal: reproduce GPT-2 (124M parameter version) from scratch. But first, build understanding from the ground up with a tiny model on a tiny dataset.</p>
+
+          <p class="mt-4"><strong>2:22 - 3:14 | Dataset setup</strong></p>
+          <p>Downloads Tiny Shakespeare (~1MB). Shows that it's just raw text &mdash; all of Shakespeare's plays concatenated. Explores the character set: 65 unique characters including uppercase, lowercase, punctuation, and newlines.</p>
+
+          <p class="mt-4"><strong>3:14 - 8:50 | Tokenization &amp; data preparation</strong></p>
+          <p>Builds encode/decode functions. Creates train/val split (90%/10%). Introduces the concept of <strong>block_size</strong> (context length) &mdash; the maximum number of tokens the model looks at. For the bigram model, block_size=1 (only one previous character). Shows how a single training example actually contains block_size+1 examples within it (each position predicts the next).</p>
+
+          <p class="mt-4"><strong>8:50 - 16:45 | Building the bigram model</strong></p>
+          <p>Creates the simplest possible neural network: a single embedding table. Input token index &rarr; lookup row &rarr; output logits for next token. No hidden layers, no attention, no positional encoding. The embedding table has shape (vocab_size, vocab_size) = (65, 65). Each of the 4,225 parameters is independently learned.</p>
+
+          <p class="mt-4"><strong>16:45 - 23:00 | Training &amp; generation</strong></p>
+          <p>Trains for 10,000 steps with AdamW optimizer. Loss drops from ~4.17 (random) to ~2.5. Generates text: it's still mostly nonsense, but you can see patterns emerging (common character pairs, some short words). This is the baseline we'll dramatically improve.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Practical Exercise -->
+    <section class="mt-8">
+      <h2 class="section-title">
+        <span class="section-title__icon">&#128736;</span>
+        Practical Exercise
+      </h2>
+      <div class="content-item">
+        <div class="content-item__title">Build and Train the Bigram Model Yourself</div>
+        <div class="content-item__body">
+          <p><strong>Time:</strong> 20-30 minutes</p>
+
+          <ol style="margin-top:var(--space-3);padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:1.8">
+            <li><strong>Set up:</strong> Open a Jupyter notebook or Google Colab. Download the Tiny Shakespeare dataset: <code style="font-family:var(--font-mono);font-size:var(--text-xs);background:var(--color-bg);padding:2px 6px;border-radius:3px">wget https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt</code></li>
+            <li><strong>Implement tokenization:</strong> Build the encode/decode functions from scratch. Print encoded text to verify.</li>
+            <li><strong>Build the BigramLanguageModel:</strong> Type the code yourself (don't copy-paste). Understand each line.</li>
+            <li><strong>Train for 10,000 steps:</strong> Plot the loss curve. Does it match what Karpathy shows (~4.17 &rarr; ~2.5)?</li>
+            <li><strong>Generate 500 characters:</strong> Compare your output to Karpathy's. Notice the character-pair patterns.</li>
+            <li><strong>Experiment:</strong> Try changing the learning rate (1e-2, 1e-4). Try training for 50,000 steps. Does the loss keep decreasing? Why or why not?</li>
+          </ol>
+
+          <p class="mt-4"><strong>Bonus challenge:</strong> Can the bigram model ever produce the word "the" reliably? Why is it limited? (Hint: think about what information is available at each prediction step.)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Takeaways -->
+    <section class="mt-8">
+      <h2 class="section-title">
+        <span class="section-title__icon">&#127942;</span>
+        Key Takeaways
+      </h2>
+      <div class="content-item">
+        <div class="content-item__body">
+          <ul style="padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:2">
+            <li><strong>Language modeling = next-token prediction.</strong> This single objective, scaled up, produces everything from autocomplete to GPT-4.</li>
+            <li><strong>Tokenization maps text to numbers.</strong> Character-level is simplest; real models use BPE. Token boundaries matter for model performance.</li>
+            <li><strong>The bigram model is a lookup table.</strong> It proves the training pipeline works, but it can only model single-character dependencies.</li>
+            <li><strong>Cross-entropy loss measures prediction quality.</strong> Random = ~4.17 for 65-char vocab. Lower is better. This metric stays the same as models scale.</li>
+            <li><strong>The training loop is universal.</strong> Forward, loss, backward, step. This exact pattern is used from the simplest to the largest models.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- What's Next -->
     <section class="mt-8">
       <h2 class="section-title">
         <span class="section-title__icon">&#128640;</span>
-        Cutting-Edge Tech Spotlight
+        What's Next
       </h2>
       <div class="content-item">
-        <div class="content-item__title">Claude Agent SDK: Building Production Multi-Agent Systems</div>
-        <div class="tags mt-2 mb-4">
-          <span class="tag">Agents</span>
-          <span class="tag">Claude</span>
-          <span class="tag">SDK</span>
-        </div>
         <div class="content-item__body">
-          <p>Anthropic's <strong>Claude Agent SDK</strong> (open-source, Python) provides a lightweight framework for building agentic applications with Claude. Key features:</p>
-
-          <ul style="margin-top:var(--space-3);padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:1.8">
-            <li><strong>Agentic loop</strong> — built-in tool-use cycle with automatic retries and guardrails</li>
-            <li><strong>Multi-agent handoffs</strong> — agents can delegate to specialized sub-agents</li>
-            <li><strong>Guardrails</strong> — input/output validation to keep agents on track</li>
-            <li><strong>MCP integration</strong> — connect to any Model Context Protocol server for external tools</li>
-          </ul>
-
-          <p class="mt-4"><strong>Why it matters:</strong> The industry is shifting from single-prompt LLM calls to orchestrated multi-agent systems. This SDK is the simplest path to building agents that can use tools, delegate tasks, and maintain safety guardrails — a critical skillset for AI engineering roles.</p>
-
-          <p class="mt-4"><strong>Quick start:</strong></p>
-          <pre style="background:var(--color-bg);padding:var(--space-3);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto;margin-top:var(--space-2);color:var(--color-text-secondary)">pip install claude-agent-sdk
-from claude_agent_sdk import Agent, tool
-
-@tool
-def search_web(query: str) -> str:
-    """Search the web for information."""
-    return web_search(query)
-
-agent = Agent(
-    model="claude-sonnet-4-20250514",
-    tools=[search_web],
-    instructions="You are a helpful research assistant."
-)
-result = agent.run("What are the latest advances in RAG?")</pre>
+          <p><strong>Session 2:</strong> The self-attention mechanism &mdash; the mathematical trick that allows the model to look at <em>all</em> previous tokens, not just the last one. This is the core innovation of the Transformer architecture and what makes GPT possible.</p>
+          <p class="mt-2">Karpathy will build self-attention from scratch using matrix multiplication, showing exactly how "queries", "keys", and "values" work. This is the most important ~25 minutes of the entire video.</p>
         </div>
       </div>
     </section>
 
-    <!-- Section 4: Course Recommendation -->
+    <!-- Session Roadmap -->
     <section class="mt-8">
       <h2 class="section-title">
-        <span class="section-title__icon">&#127891;</span>
-        Course &amp; Learning Resource
+        <span class="section-title__icon">&#128506;</span>
+        Session Roadmap
       </h2>
       <div class="content-item">
-        <div class="content-item__title">DeepLearning.AI — Building Agentic RAG with LlamaIndex</div>
-        <div class="tags mt-2 mb-4">
-          <span class="tag tag--green">Free</span>
-          <span class="tag">1.5 hours</span>
-          <span class="tag">Intermediate</span>
-        </div>
         <div class="content-item__body">
-          <p><strong>Platform:</strong> DeepLearning.AI (in partnership with LlamaIndex)</p>
-          <p><strong>Duration:</strong> ~1.5 hours</p>
-          <p><strong>Difficulty:</strong> Intermediate (assumes basic Python + LLM knowledge)</p>
-
-          <p class="mt-4"><strong>What you'll learn:</strong></p>
-          <ul style="margin-top:var(--space-2);padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:1.8">
-            <li>How to build RAG pipelines that use <em>agentic reasoning</em> to decide what to retrieve</li>
-            <li>Router queries across multiple data sources (vector stores, SQL, APIs)</li>
-            <li>Build tool-use agents that dynamically compose retrieval strategies</li>
-            <li>Implement query planning for complex multi-step questions</li>
-          </ul>
-
-          <p class="mt-4"><strong>Why this matters for your job search:</strong> Companies like Glean build enterprise search products that combine retrieval, ranking, and agentic query understanding. This course teaches exactly the intersection of RAG + agents that these companies value. Completing it gives you hands-on experience you can discuss in interviews.</p>
+          <ol style="padding-left:var(--space-6);color:var(--color-text-secondary);font-size:var(--text-sm);line-height:2">
+            <li style="color:var(--color-accent);font-weight:600">Session 1: Introduction, bigram language model, tokenization basics &#10003;</li>
+            <li>Session 2: Self-attention mechanism &mdash; the mathematical trick</li>
+            <li>Session 3: Multi-head attention and transformer block architecture</li>
+            <li>Session 4: Building the full GPT model &mdash; layer norms, residual connections, feedforward</li>
+            <li>Session 5: Training loop, generation, and scaling considerations</li>
+          </ol>
         </div>
       </div>
-    </section>
-
-    <!-- Section 5: Industry Pulse -->
-    <section class="mt-8">
-      <h2 class="section-title">
-        <span class="section-title__icon">&#128225;</span>
-        Industry Pulse
-      </h2>
-      <ul class="content-list">
-        <li class="content-item">
-          <div class="content-item__title">Anthropic Expands Enterprise Push</div>
-          <div class="content-item__body">
-            Anthropic continues expanding its enterprise platform with new features around agent orchestration, prompt caching, and enterprise-grade security. Their job listings show heavy hiring for <strong>ML Infrastructure</strong>, <strong>Applied Research</strong>, and <strong>Solutions Engineering</strong> roles — indicating investment in making Claude more accessible to enterprise developers.
-          </div>
-        </li>
-        <li class="content-item">
-          <div class="content-item__title">Glean Raises AI Search Bar</div>
-          <div class="content-item__body">
-            Glean, the enterprise AI search platform, continues to be one of the fastest-growing AI companies. Their tech stack heavily uses <strong>retrieval, ranking, and LLM-based answer generation</strong> — making RAG expertise the #1 skill they hire for. Current open roles include Senior ML Engineer (Search) and Staff Engineer (RAG Platform).
-          </div>
-        </li>
-        <li class="content-item">
-          <div class="content-item__title">Open-Source Agent Frameworks Consolidating</div>
-          <div class="content-item__body">
-            The agent framework landscape is maturing. LangGraph, CrewAI, and Anthropic's Agent SDK are emerging as the leading options. Key trend: frameworks are moving from "chain-of-prompts" to true <strong>tool-use agentic loops</strong> with planning, reflection, and multi-agent delegation. If you're building a portfolio, demonstrating agent-building skills is highly differentiated.
-          </div>
-        </li>
-      </ul>
     </section>
 
     <footer class="site-footer">
