@@ -1,0 +1,86 @@
+name: Daily AI Briefing
+
+on:
+  schedule:
+    # 7:00 AM PST = 3:00 PM UTC (PST is UTC-8)
+    # During PDT (Mar-Nov), 7:00 AM PDT = 2:00 PM UTC
+    - cron: '0 15 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  generate-ai-learning:
+    name: AI Learning Engineer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Generate AI Learning Digest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: bash scripts/generate-ai-learning.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-learning-output
+          path: output/ai-learning-engineer/
+
+  generate-stock-trader:
+    name: Stock Trader Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Generate Stock Trader Analysis
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: bash scripts/generate-stock-trader.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-trader-output
+          path: output/stock-trader/
+
+  publish:
+    name: Publish Results
+    needs: [generate-ai-learning, generate-stock-trader]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Download AI Learning output
+        uses: actions/download-artifact@v4
+        with:
+          name: ai-learning-output
+          path: output/ai-learning-engineer/
+
+      - name: Download Stock Trader output
+        uses: actions/download-artifact@v4
+        with:
+          name: stock-trader-output
+          path: output/stock-trader/
+
+      - name: Update manifest
+        run: bash scripts/update-manifest.sh
+
+      - name: Commit and push results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Daily briefing — $(date -u +%Y-%m-%d)"
+          git push
