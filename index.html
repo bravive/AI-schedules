@@ -30,6 +30,7 @@
     .sidebar__header {
       padding: var(--space-5) var(--space-4);
       border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
     }
 
     .sidebar__logo {
@@ -89,6 +90,11 @@
       color: var(--color-success);
     }
 
+    .sidebar__task-icon--news {
+      background: var(--color-warning-dim);
+      color: var(--color-warning);
+    }
+
     .sidebar__entries {
       list-style: none;
     }
@@ -138,12 +144,146 @@
       flex: 1;
       overflow: hidden;
       background: var(--color-bg);
+      position: relative;
     }
 
     .content-frame {
       border: none;
       width: 100%;
       height: 100%;
+    }
+
+    /* ---- Dashboard ---- */
+    .dashboard {
+      height: 100%;
+      overflow-y: auto;
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .dashboard__inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .dashboard__header {
+      margin-bottom: var(--space-8);
+    }
+
+    .dashboard__title {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--color-text);
+    }
+
+    .dashboard__subtitle {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+    }
+
+    .dashboard__date {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-accent);
+      margin-top: var(--space-1);
+    }
+
+    .dashboard__cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .dash-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .dash-card:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 1px var(--color-accent-dim);
+    }
+
+    .dash-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+
+    .dash-card__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .dash-card__icon--ai {
+      background: var(--color-accent-dim);
+      color: var(--color-accent);
+    }
+
+    .dash-card__icon--stock {
+      background: var(--color-success-dim);
+      color: var(--color-success);
+    }
+
+    .dash-card__icon--news {
+      background: var(--color-warning-dim);
+      color: var(--color-warning);
+    }
+
+    .dash-card__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .dash-card__desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .dash-card__bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .dash-card__bullets li {
+      position: relative;
+      padding-left: var(--space-5);
+      padding-top: var(--space-1);
+      padding-bottom: var(--space-1);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    .dash-card__bullets li::before {
+      content: '•';
+      position: absolute;
+      left: var(--space-2);
+      color: var(--color-text-muted);
+    }
+
+    .dash-card__cta {
+      display: inline-block;
+      margin-top: var(--space-4);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     /* ---- Mobile sidebar toggle ---- */
@@ -197,7 +337,7 @@
 
     <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="sidebar__header">
+      <div class="sidebar__header" onclick="showDashboard()">
         <div class="sidebar__logo">AI Schedules</div>
         <div class="sidebar__tagline">Daily briefings by AI agents</div>
       </div>
@@ -211,7 +351,7 @@
             AI Learning Engineer
           </div>
           <ul class="sidebar__entries" id="entries-ai-learning-engineer">
-            <li class="sidebar__entry sidebar__entry--active"
+            <li class="sidebar__entry"
                 data-task="ai-learning-engineer" data-date="2026-03-11"
                 onclick="loadEntry(this)">
               <span class="sidebar__entry-date">03-11</span>
@@ -236,6 +376,22 @@
           </ul>
         </div>
 
+        <!-- Market-Moving News -->
+        <div class="sidebar__task-group">
+          <div class="sidebar__task-label">
+            <div class="sidebar__task-icon sidebar__task-icon--news">&#9888;</div>
+            Market News
+          </div>
+          <ul class="sidebar__entries" id="entries-market-news">
+            <li class="sidebar__entry"
+                data-task="market-news" data-date="2026-03-11"
+                onclick="loadEntry(this)">
+              <span class="sidebar__entry-date">03-11</span>
+              <span class="sidebar__entry-name">2026-03-11</span>
+            </li>
+          </ul>
+        </div>
+
       </nav>
 
       <div class="sidebar__footer">
@@ -245,23 +401,117 @@
 
     <!-- Main reading area -->
     <main class="main">
-      <iframe id="content-frame" class="content-frame"
-              src="output/ai-learning-engineer/2026-03-11.html"
+      <!-- Dashboard (default view) -->
+      <div id="dashboard" class="dashboard">
+        <div class="dashboard__inner">
+          <div class="dashboard__header">
+            <h1 class="dashboard__title">Today's Briefing</h1>
+            <div class="dashboard__date" id="dashboard-date">2026-03-11</div>
+            <p class="dashboard__subtitle">AI-generated daily insights across 3 tasks</p>
+          </div>
+
+          <div class="dashboard__cards">
+
+            <!-- AI Learning Card -->
+            <div class="dash-card" onclick="openTask('ai-learning-engineer')">
+              <div class="dash-card__header">
+                <div class="dash-card__icon dash-card__icon--ai">&#9883;</div>
+                <div>
+                  <div class="dash-card__title">AI Learning Engineer</div>
+                  <div class="dash-card__desc">Your 10-minute daily AI briefing</div>
+                </div>
+              </div>
+              <ul class="dash-card__bullets" id="summary-ai-learning-engineer">
+                <li>Use Structured Outputs to eliminate post-processing in LLM apps</li>
+                <li>RAG Deep Dive: parent-child chunking for better retrieval relevance</li>
+                <li>Cutting-Edge: diffusion models for code generation</li>
+                <li>Course pick: Stanford CS25 — Transformers United</li>
+                <li>Industry Pulse: OpenAI and Google race on multi-modal agents</li>
+              </ul>
+              <span class="dash-card__cta">Read full briefing &rarr;</span>
+            </div>
+
+            <!-- Stock Trader Card -->
+            <div class="dash-card" onclick="openTask('stock-trader')">
+              <div class="dash-card__header">
+                <div class="dash-card__icon dash-card__icon--stock">&#9650;</div>
+                <div>
+                  <div class="dash-card__title">Stock Trader</div>
+                  <div class="dash-card__desc">Pre-market analysis — Top 10 growth picks</div>
+                </div>
+              </div>
+              <ul class="dash-card__bullets" id="summary-stock-trader">
+                <li>Sentiment: Moderately Bullish — S&amp;P futures +0.4%, Nasdaq +0.6%</li>
+                <li>SMCI (+6.2%) — New AI server rack design, cloud provider partnership</li>
+                <li>IONQ (+5.8%) — Q4 earnings beat, revenue +92% YoY</li>
+                <li>CRSP (+5.1%) — FDA advisory committee favorable vote on Casgevy</li>
+                <li>PLTR (+3.8%) — New $480M DoD contract announced</li>
+              </ul>
+              <span class="dash-card__cta">Read full analysis &rarr;</span>
+            </div>
+
+            <!-- Market News Card -->
+            <div class="dash-card" onclick="openTask('market-news')">
+              <div class="dash-card__header">
+                <div class="dash-card__icon dash-card__icon--news">&#9888;</div>
+                <div>
+                  <div class="dash-card__title">Market-Moving News</div>
+                  <div class="dash-card__desc">10 stories impacting stocks &amp; crypto today</div>
+                </div>
+              </div>
+              <ul class="dash-card__bullets" id="summary-market-news">
+                <li>CPI report tomorrow expected to show cooling inflation — bullish for risk assets</li>
+                <li>EU proposes MiCA-2 regulation for DeFi — mixed for crypto</li>
+                <li>NVIDIA unveils Blackwell Ultra at GTC — massive AI supply chain catalyst</li>
+                <li>SEC signals clearer crypto custody rules — bullish for institutional adoption</li>
+                <li>Bitcoin ETF inflows hit $1.2B single day — supply squeeze intensifying</li>
+              </ul>
+              <span class="dash-card__cta">Read full report &rarr;</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- iframe (hidden by default, shown when entry selected) -->
+      <iframe id="content-frame" class="content-frame" style="display:none;"
               title="Task content"></iframe>
     </main>
 
   </div>
 
   <script>
+    function showDashboard() {
+      document.getElementById('dashboard').style.display = '';
+      document.getElementById('content-frame').style.display = 'none';
+      document.querySelectorAll('.sidebar__entry').forEach(function(e) {
+        e.classList.remove('sidebar__entry--active');
+      });
+      document.querySelector('.sidebar').classList.remove('sidebar--open');
+    }
+
     function loadEntry(el) {
-      document.querySelectorAll('.sidebar__entry').forEach(e => e.classList.remove('sidebar__entry--active'));
+      document.querySelectorAll('.sidebar__entry').forEach(function(e) {
+        e.classList.remove('sidebar__entry--active');
+      });
       el.classList.add('sidebar__entry--active');
 
-      const task = el.dataset.task;
-      const date = el.dataset.date;
-      document.getElementById('content-frame').src = 'output/' + task + '/' + date + '.html';
+      var task = el.dataset.task;
+      var date = el.dataset.date;
+      document.getElementById('dashboard').style.display = 'none';
+      var frame = document.getElementById('content-frame');
+      frame.style.display = '';
+      frame.src = 'output/' + task + '/' + date + '.html';
 
       document.querySelector('.sidebar').classList.remove('sidebar--open');
+    }
+
+    function openTask(taskType) {
+      // Find the latest entry for this task and click it
+      var entries = document.querySelectorAll('.sidebar__entry[data-task="' + taskType + '"]');
+      if (entries.length > 0) {
+        loadEntry(entries[0]);
+      }
     }
 
     // Load manifest to populate sidebar entries dynamically
@@ -272,10 +522,12 @@
 
         var aiEntries = document.getElementById('entries-ai-learning-engineer');
         var stockEntries = document.getElementById('entries-stock-trader');
+        var newsEntries = document.getElementById('entries-market-news');
         aiEntries.innerHTML = '';
         stockEntries.innerHTML = '';
+        newsEntries.innerHTML = '';
 
-        var taskEntries = { 'ai-learning-engineer': [], 'stock-trader': [] };
+        var taskEntries = { 'ai-learning-engineer': [], 'stock-trader': [], 'market-news': [] };
 
         manifest.archive.forEach(function(entry) {
           entry.tasks.forEach(function(t) {
@@ -285,15 +537,24 @@
           });
         });
 
-        var firstLoaded = false;
+        // Update dashboard date from latest entry
+        if (manifest.archive.length > 0) {
+          document.getElementById('dashboard-date').textContent = manifest.archive[0].date;
+        }
+
+        var containerMap = {
+          'ai-learning-engineer': aiEntries,
+          'stock-trader': stockEntries,
+          'market-news': newsEntries
+        };
 
         Object.keys(taskEntries).forEach(function(taskType) {
-          var container = taskType === 'ai-learning-engineer' ? aiEntries : stockEntries;
+          var container = containerMap[taskType];
           var entries = taskEntries[taskType];
 
-          entries.forEach(function(e, i) {
+          entries.forEach(function(e) {
             var li = document.createElement('li');
-            li.className = 'sidebar__entry' + (!firstLoaded && i === 0 ? ' sidebar__entry--active' : '');
+            li.className = 'sidebar__entry';
             li.dataset.task = taskType;
             li.dataset.date = e.date;
             li.onclick = function() { loadEntry(li); };
@@ -302,11 +563,6 @@
             li.innerHTML = '<span class="sidebar__entry-date">' + shortDate + '</span>' +
               '<span class="sidebar__entry-name">' + e.date + '</span>';
             container.appendChild(li);
-
-            if (!firstLoaded && i === 0) {
-              document.getElementById('content-frame').src = e.path;
-              firstLoaded = true;
-            }
           });
         });
       })

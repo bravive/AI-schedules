@@ -175,6 +175,11 @@ a:hover {
   color: var(--color-success);
 }
 
+.card__icon--news {
+  background: var(--color-warning-dim);
+  color: var(--color-warning);
+}
+
 .card__title {
   font-size: var(--text-xl);
   font-weight: 600;
