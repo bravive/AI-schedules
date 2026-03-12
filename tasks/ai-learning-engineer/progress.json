@@ -13,7 +13,7 @@
       "Prerequisites: just basic Python and PyTorch — accessible to anyone"
     ],
     "total_sessions": 5,
-    "current_session": 1,
+    "current_session": 3,
     "session_plan": [
       "Session 1: Introduction, bigram language model, tokenization basics",
       "Session 2: Self-attention mechanism — the mathematical trick",
