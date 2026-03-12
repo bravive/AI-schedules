@@ -33,12 +33,12 @@
       <div style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-3)">
         Andrej Karpathy &middot; 1h 56m &middot; 8.5M+ views
       </div>
-      <div style="margin-bottom:var(--space-2);font-size:var(--text-sm);font-weight:600;color:var(--color-text-secondary)">Session 2 of 5 &mdash; Self-Attention Mechanism: The Mathematical Trick</div>
+      <div style="margin-bottom:var(--space-2);font-size:var(--text-sm);font-weight:600;color:var(--color-text-secondary)">Session 3 of 5 &mdash; Multi-Head Attention &amp; Transformer Block Architecture</div>
       <div class="confidence" style="max-width:300px">
         <div class="confidence__bar" style="max-width:100%;flex:1">
-          <div class="confidence__fill" style="width:40%;background:var(--color-accent)"></div>
+          <div class="confidence__fill" style="width:60%;background:var(--color-accent)"></div>
         </div>
-        <span class="confidence__label">2 / 5</span>
+        <span class="confidence__label">3 / 5</span>
       </div>
     </section>
 
@@ -47,8 +47,8 @@
       <h2 class="section-title"><span class="section-title__icon">&#128260;</span> Where We Left Off</h2>
       <div class="content-item">
         <div class="content-item__body">
-          <p>In Session 1, we built a <strong>bigram language model</strong> that predicts the next character using only the current character. It works, but it has a fatal limitation: it has no memory. It cannot look at context. The word "the" is easy for a human to predict mid-sentence, but our bigram model has no idea what came before the current letter.</p>
-          <p style="margin-top:var(--space-2)">Today we fix that. We learn <strong>self-attention</strong> &mdash; the mechanism that lets a model look at <em>all</em> previous tokens and decide which ones are relevant for predicting the next one. This is the single most important idea in the transformer architecture.</p>
+          <p>In Session 2, we built a <strong>single self-attention head</strong> from scratch. We learned the Query-Key-Value mechanism: each token produces a Query ("what am I looking for?"), a Key ("what do I contain?"), and a Value ("what do I share?"). The dot product of Q and K determines attention weights, and those weights are used to create a weighted sum of Values. We applied causal masking to prevent tokens from looking at the future, and scaling to keep gradients healthy.</p>
+          <p style="margin-top:var(--space-2)">But one attention head can only capture one type of relationship at a time. Today we solve this limitation with <strong>multi-head attention</strong> &mdash; running several attention heads in parallel. We also build the complete <strong>transformer block</strong> by adding feed-forward networks, residual connections, and layer normalization. These are the final building blocks before we assemble a full GPT model.</p>
         </div>
       </div>
     </section>
@@ -58,69 +58,71 @@
       <h2 class="section-title"><span class="section-title__icon">&#128218;</span> Prerequisites Explained</h2>
 
       <div class="content-item" style="margin-bottom:var(--space-3)">
-        <div class="content-item__title">Vectors and Embeddings (Recap)</div>
+        <div class="content-item__title">Concatenation &mdash; Joining Tensors Together</div>
         <div class="content-item__body">
-          <p>A <strong>vector</strong> is a list of numbers that represents something. In our model, each token is represented by a vector (its embedding). Think of a vector as GPS coordinates in "meaning space" &mdash; tokens with similar meanings end up with similar coordinates. A vector like <code>[0.2, -0.5, 1.3, 0.8]</code> is a 4-dimensional embedding: four numbers that together capture something about that token's identity.</p>
+          <p><strong>Concatenation</strong> means sticking tensors end-to-end along a specific dimension. If you have two vectors of length 4, concatenating them gives you one vector of length 8. In multi-head attention, we concatenate the outputs of all heads along the feature dimension to combine their different "perspectives."</p>
+          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine three friends each take notes on different aspects of a lecture &mdash; one on key dates, one on main arguments, one on examples. Concatenation is stapling all their note pages together into one combined document.</p>
           <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch
-# A token's embedding is just a vector of numbers
-token_embedding = torch.tensor([0.2, -0.5, 1.3, 0.8])
-print(token_embedding.shape)  # torch.Size([4]) — a 4-dimensional vector</code></pre>
+a = torch.tensor([1, 2, 3, 4])      # shape (4,)
+b = torch.tensor([5, 6, 7, 8])      # shape (4,)
+c = torch.cat([a, b], dim=0)        # shape (8,) = [1,2,3,4,5,6,7,8]
+
+# In multi-head attention:
+# head_1 output: (B, T, head_size)    e.g. (1, 8, 16)
+# head_2 output: (B, T, head_size)    e.g. (1, 8, 16)
+# Concatenated:  (B, T, 2*head_size)  e.g. (1, 8, 32)</code></pre>
         </div>
       </div>
 
       <div class="content-item" style="margin-bottom:var(--space-3)">
-        <div class="content-item__title">Dot Product &mdash; Measuring Similarity</div>
+        <div class="content-item__title">Residual Connections &mdash; The Highway for Gradients</div>
         <div class="content-item__body">
-          <p>The <strong>dot product</strong> of two vectors tells you how similar they are. Multiply corresponding elements, then sum the results. If two vectors point in the same direction, their dot product is large and positive. If they point in opposite directions, it is large and negative. If they are unrelated (perpendicular), it is near zero.</p>
-          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine two people pointing flashlights. If they point in the same direction, the dot product is high (they agree). If they point in opposite directions, the dot product is very negative (they disagree). If one points north and the other east, the dot product is zero (unrelated).</p>
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>a = torch.tensor([1.0, 2.0, 3.0])
-b = torch.tensor([4.0, 5.0, 6.0])
+          <p>A <strong>residual connection</strong> (or skip connection) adds the input of a layer directly to its output: <code>output = layer(x) + x</code>. Instead of the layer learning the full transformation, it only needs to learn the <em>change</em> (the residual). This was introduced in ResNet (2015) and is critical for training deep networks.</p>
+          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine you are editing a document. Without residual connections, each editor rewrites the entire document from scratch. With residual connections, each editor only adds their suggested changes (tracked changes). The original text is always preserved, and if an editor has nothing useful to add, they can output zeros &mdash; effectively doing nothing rather than corrupting the text.</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Without residual connection:
+x = layer(x)          # x is completely replaced
 
-# Dot product: (1*4) + (2*5) + (3*6) = 4 + 10 + 18 = 32
-dot = torch.dot(a, b)  # tensor(32.)
+# With residual connection:
+x = x + layer(x)      # x is preserved, layer only adds its contribution
 
-# High dot product = these vectors are "similar" / pointing same way</code></pre>
+# Why this helps: during backpropagation, the gradient can flow
+# through the "+" directly back to earlier layers, avoiding the
+# vanishing gradient problem that plagues deep networks.</code></pre>
         </div>
       </div>
 
       <div class="content-item" style="margin-bottom:var(--space-3)">
-        <div class="content-item__title">Matrix Multiplication &mdash; Many Dot Products at Once</div>
+        <div class="content-item__title">Layer Normalization &mdash; Keeping Numbers Tame</div>
         <div class="content-item__body">
-          <p><strong>Matrix multiplication</strong> is just doing many dot products in parallel. When you multiply matrix A (shape <code class="text-mono">T x d</code>) by matrix B (shape <code class="text-mono">d x T</code>), each entry in the result is the dot product of a row from A with a column from B. This is how attention computes the similarity between every pair of tokens at once.</p>
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Q has shape (T, d) — each row is one token's query vector
-# K has shape (T, d) — each row is one token's key vector
-# Q @ K.T gives a (T, T) matrix of all pairwise dot products
-Q = torch.randn(4, 8)   # 4 tokens, 8-dim queries
-K = torch.randn(4, 8)   # 4 tokens, 8-dim keys
-scores = Q @ K.T         # (4, 4) — token i's affinity for token j</code></pre>
+          <p><strong>Layer normalization</strong> normalizes the values across the feature dimension of each token independently. For each token, it computes the mean and standard deviation across its features, then scales to have mean=0 and std=1. It then applies learned scale (<code>gamma</code>) and shift (<code>beta</code>) parameters.</p>
+          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine a class of students where some naturally score in the 90s and others in the 50s on different subjects. Layer norm is like converting each student's scores to z-scores relative to their own average. This makes it easier to compare and combine scores across very different scales.</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch.nn as nn
+
+n_embd = 32
+ln = nn.LayerNorm(n_embd)
+
+x = torch.randn(1, 8, n_embd)   # (B, T, C) — 8 tokens, 32 features
+x_norm = ln(x)
+
+# For each token: mean ≈ 0.0, std ≈ 1.0
+print(x_norm[0, 0].mean())  # ≈ 0.0
+print(x_norm[0, 0].std())   # ≈ 1.0</code></pre>
         </div>
       </div>
 
       <div class="content-item" style="margin-bottom:var(--space-3)">
-        <div class="content-item__title">Softmax &mdash; Turning Scores into Probabilities</div>
+        <div class="content-item__title">Feed-Forward Networks &mdash; Thinking Time for Each Token</div>
         <div class="content-item__body">
-          <p><strong>Softmax</strong> takes a list of raw numbers and converts them into probabilities that sum to 1.0. It exponentiates each number (making them all positive), then divides each by the total. Larger inputs get disproportionately larger probabilities &mdash; softmax is "winner-take-more."</p>
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch.nn.functional as F
-
-scores = torch.tensor([2.0, 1.0, 0.1])
-weights = F.softmax(scores, dim=-1)
-print(weights)  # tensor([0.6590, 0.2424, 0.0986])
-print(weights.sum())  # tensor(1.0) — always sums to 1</code></pre>
-        </div>
-      </div>
-
-      <div class="content-item" style="margin-bottom:var(--space-3)">
-        <div class="content-item__title">Masking &mdash; Hiding the Future</div>
-        <div class="content-item__body">
-          <p>In language generation, a token should only look at tokens that came <em>before</em> it, never tokens that come <em>after</em>. That would be cheating &mdash; like reading the answer before answering the question. <strong>Masking</strong> sets certain values to negative infinity before softmax, which forces those positions to become zero probability. This is called <strong>causal masking</strong> or an <strong>autoregressive mask</strong>.</p>
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Lower-triangular mask: 1s below/on diagonal, 0s above
-T = 4
-mask = torch.tril(torch.ones(T, T))
-# tensor([[1, 0, 0, 0],
-#         [1, 1, 0, 0],
-#         [1, 1, 1, 0],
-#         [1, 1, 1, 1]])
-# Token 0 can only see itself; token 3 can see all 4 tokens</code></pre>
+          <p>A <strong>feed-forward network (FFN)</strong> in a transformer is a simple two-layer MLP applied to each token independently. It expands the dimension (typically 4x), applies a non-linearity (ReLU or GELU), then projects back down. While attention lets tokens <em>communicate</em>, the FFN lets each token <em>think</em> about the information it gathered.</p>
+          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Attention is like a group discussion where everyone shares notes. The FFN is the quiet thinking time afterward where each person privately processes what they heard and forms their own conclusions.</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># A simple feed-forward network
+n_embd = 32
+ffn = nn.Sequential(
+    nn.Linear(n_embd, 4 * n_embd),  # expand: 32 -> 128
+    nn.ReLU(),                        # non-linearity
+    nn.Linear(4 * n_embd, n_embd),   # project back: 128 -> 32
+)
+# Applied to each token independently — no communication here</code></pre>
         </div>
       </div>
     </section>
@@ -132,44 +134,40 @@ mask = torch.tril(torch.ones(T, T))
         <div class="content-item__body">
           <table style="width:100%;font-size:var(--text-sm)">
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Attention</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A mechanism that lets each token look at other tokens and compute a weighted combination of their information. The weights are learned, not fixed &mdash; the model decides what to pay attention to.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Concatenation</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Joining multiple tensors end-to-end along a dimension. Multi-head attention concatenates the outputs of all heads along the feature axis.</td>
             </tr>
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Causal Mask</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A triangular matrix that prevents tokens from attending to future positions. Ensures the model can only use past context for prediction, preserving the autoregressive property.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Feed-Forward Network</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A two-layer MLP applied independently to each token. Typically expands to 4x the embedding dimension then projects back. Provides per-token "thinking time."</td>
             </tr>
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Dot Product</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A mathematical operation that multiplies corresponding elements of two vectors and sums the results. Used in attention to measure how relevant one token is to another.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">GELU</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Gaussian Error Linear Unit &mdash; a smoother alternative to ReLU used in modern transformers. Unlike ReLU which hard-clips negatives to 0, GELU provides a smooth curve that allows small negative gradients.</td>
             </tr>
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Key (K)</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A learned projection of a token's embedding that answers: "What information do I contain?" Keys are compared against queries via dot product to determine attention weights.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Layer Normalization</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Normalizes activations across the feature dimension for each token. Stabilizes training by keeping values in a reasonable numerical range. Applied before attention and FFN in pre-norm transformers.</td>
             </tr>
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Query (Q)</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A learned projection of a token's embedding that answers: "What am I looking for?" Each token broadcasts a query that is compared against all available keys.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Multi-Head Attention</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Running multiple self-attention heads in parallel, each with its own Q/K/V projections. Different heads learn to attend to different types of patterns (syntax, semantics, position). Outputs are concatenated.</td>
             </tr>
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Scaled Dot-Product</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">The dot product divided by the square root of the key dimension. Prevents the dot products from growing too large, which would cause softmax to produce near-one-hot distributions and kill gradients.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Pre-Norm</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Applying layer normalization BEFORE the sublayer (attention or FFN) rather than after. This is the variant Karpathy uses and is standard in modern transformers (GPT-2, GPT-3, etc.).</td>
             </tr>
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Self-Attention</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Attention where the queries, keys, and values all come from the same sequence. Each token attends to other tokens in its own sequence (as opposed to cross-attention where they come from different sequences).</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Residual Connection</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Adding the input of a layer directly to its output: <code>output = x + layer(x)</code>. Creates a gradient highway that enables training of very deep networks (50+ layers).</td>
             </tr>
             <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Softmax</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A function that converts a vector of raw scores into a probability distribution (non-negative values summing to 1). Used to normalize attention weights so they represent proportional relevance.</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--color-border)">
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Value (V)</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">A learned projection of a token's embedding that answers: "What information do I give if someone attends to me?" The final attention output is a weighted sum of value vectors.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Transformer Block</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">The fundamental repeating unit in a transformer: layer norm &rarr; multi-head attention &rarr; residual &rarr; layer norm &rarr; FFN &rarr; residual. A GPT model stacks N of these blocks.</td>
             </tr>
             <tr>
-              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Weighted Sum</td>
-              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">Adding up vectors, but each one is multiplied by a weight first. If token A has weight 0.7 and token B has weight 0.3, the result is mostly A's information with a little of B's mixed in.</td>
+              <td style="padding:var(--space-2) var(--space-3);font-weight:600;white-space:nowrap;vertical-align:top">Vanishing Gradient</td>
+              <td style="padding:var(--space-2) var(--space-3);color:var(--color-text-secondary)">When gradients become extremely small as they propagate backward through many layers, making early layers learn very slowly or not at all. Residual connections and layer norm help prevent this.</td>
             </tr>
           </table>
         </div>
@@ -178,216 +176,181 @@ mask = torch.tril(torch.ones(T, T))
 
     <!-- Key Concepts -->
     <section style="margin-bottom:var(--space-6)">
-      <h2 class="section-title"><span class="section-title__icon">&#127979;</span> Key Concepts: Self-Attention from First Principles</h2>
+      <h2 class="section-title"><span class="section-title__icon">&#127979;</span> Key Concepts: Multi-Head Attention &amp; The Transformer Block</h2>
 
-      <!-- Concept 1: The Problem with Bigrams -->
+      <!-- Concept 1: Why Multiple Heads? -->
       <div class="content-item" style="margin-bottom:var(--space-4)">
-        <div class="content-item__title">The Problem: Why Bigrams Are Not Enough</div>
+        <div class="content-item__title">The Problem: One Head Is Not Enough</div>
         <div class="content-item__body">
-          <p>Our bigram model from Session 1 predicts the next character by looking at <em>only</em> the current character. But language depends on context. Consider: "The cat sat on the ___." A human easily guesses "mat" or "floor" because we use the entire sentence. A bigram model only sees "e" (the last character of "the") and has no idea a cat is involved.</p>
-          <p style="margin-top:var(--space-2)">What we need is a way for each token to <strong>gather information from previous tokens</strong>. The simplest version: just average all the previous token embeddings together.</p>
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Naive approach: for each token, average all previous embeddings
-# x has shape (B, T, C) — batch, time, channels
-T = x.shape[1]
-xbow = torch.zeros_like(x)  # "bag of words"
-for t in range(T):
-    xbow[:, t] = x[:, :t+1].mean(dim=1)  # average tokens 0..t
-
-# Problem: this treats ALL previous tokens equally.
-# "The" is just as important as "cat" — but it shouldn't be!</code></pre>
-          <p style="margin-top:var(--space-2)">This averaging approach is a start, but it treats every previous token as equally important. We want the model to <em>learn</em> which tokens matter more. That is exactly what self-attention does.</p>
+          <p>A single attention head can only focus on one type of relationship at a time. Consider the sentence: "The <strong>cat</strong>, which was <strong>black</strong>, sat on the <strong>mat</strong>." Different parts of this sentence have different relationships:</p>
+          <ul style="margin-top:var(--space-2)">
+            <li><strong>Syntactic:</strong> "cat" is the subject of "sat" (grammatical structure)</li>
+            <li><strong>Semantic:</strong> "black" modifies "cat" (meaning/attribution)</li>
+            <li><strong>Positional:</strong> "mat" is close to "sat" (nearby context)</li>
+          </ul>
+          <p style="margin-top:var(--space-2)">One attention head's Q/K/V projections can only learn one pattern. If it learns to track syntax, it misses semantics. The solution: run multiple heads in parallel, each learning different patterns.</p>
+          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine watching a movie. One person focuses on dialogue, another on visual composition, a third on the musical score. Each person catches different things. Multi-head attention is like having multiple specialist reviewers watching the same sequence simultaneously &mdash; their combined perspectives give a richer understanding than any single reviewer could provide.</p>
         </div>
       </div>
 
-      <!-- Concept 2: The Mathematical Trick — Weighted Aggregation -->
+      <!-- Concept 2: Multi-Head Attention -->
       <div class="content-item" style="margin-bottom:var(--space-4)">
-        <div class="content-item__title">Concept 1: The Mathematical Trick &mdash; Weighted Aggregation with Matrix Multiply</div>
-        <div class="content-item__meta">Covered at ~47:00 in the video</div>
+        <div class="content-item__title">Concept 1: Multi-Head Attention &mdash; Parallel Perspectives</div>
+        <div class="content-item__meta">Covered at ~1:20:00 in the video</div>
         <div class="content-item__body">
-          <p><strong>The key insight:</strong> We can compute a running average of previous tokens using matrix multiplication instead of a for-loop. This is both faster (GPUs love matrix multiplication) and, crucially, allows us to make the weights <em>learnable</em>.</p>
-
-          <p style="margin-top:var(--space-2)"><strong>The analogy:</strong> Imagine you are writing a book report. Instead of re-reading the entire book every time you write a sentence, you have sticky notes on the most important pages. The "weights" are like how many sticky notes each page has &mdash; pages with more notes contribute more to your understanding.</p>
-
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch
-import torch.nn.functional as F
-
-T = 4  # sequence length (4 tokens)
-# Step 1: Create a lower-triangular matrix of ones
-tril = torch.tril(torch.ones(T, T))
-# tensor([[1, 0, 0, 0],
-#         [1, 1, 0, 0],
-#         [1, 1, 1, 0],
-#         [1, 1, 1, 1]])
-
-# Step 2: Normalize each row to sum to 1 (uniform weights)
-weights = tril / tril.sum(dim=1, keepdim=True)
-# tensor([[1.00, 0.00, 0.00, 0.00],   # token 0: 100% itself
-#         [0.50, 0.50, 0.00, 0.00],   # token 1: 50% each of 0,1
-#         [0.33, 0.33, 0.33, 0.00],   # token 2: 33% each of 0,1,2
-#         [0.25, 0.25, 0.25, 0.25]])  # token 3: 25% each of 0,1,2,3
-
-# Step 3: Matrix multiply to compute weighted averages
-x = torch.randn(1, T, 8)  # 4 tokens with 8-dim embeddings
-xbow = weights @ x         # (T,T) @ (B,T,C) -> (B,T,C)
-# Each token's output is now the average of itself and all previous tokens!</code></pre>
-
-          <p style="margin-top:var(--space-2)"><strong>Why this matters:</strong> By changing the <code>weights</code> matrix, we can control exactly how much each token contributes to each other token's representation. Uniform weights give us a simple average. But what if we could <em>learn</em> the weights based on what the tokens actually contain? That is self-attention.</p>
-        </div>
-      </div>
-
-      <!-- Concept 3: Query, Key, Value -->
-      <div class="content-item" style="margin-bottom:var(--space-4)">
-        <div class="content-item__title">Concept 2: Query, Key, Value &mdash; The Three Roles Every Token Plays</div>
-        <div class="content-item__meta">Covered at ~1:00:00 in the video</div>
-        <div class="content-item__body">
-          <p><strong>The core idea:</strong> In self-attention, every token simultaneously plays three roles. It produces a <strong>Query</strong> ("What am I looking for?"), a <strong>Key</strong> ("What do I contain?"), and a <strong>Value</strong> ("What information do I provide?"). The Query of one token is compared against the Keys of all other tokens to decide who to pay attention to. Then the Values of the attended tokens are combined.</p>
-
-          <p style="margin-top:var(--space-2)"><strong>The analogy:</strong> Think of a library. You walk in with a <strong>question</strong> (your Query): "I need information about cats." Each book on the shelf has a <strong>label</strong> (its Key): "Cat Behavior", "Dog Training", "Feline Health", "Car Repair." You compare your question against every label. "Cat Behavior" and "Feline Health" match well (high dot product). "Car Repair" does not match (low dot product). You then read the matching books and combine their <strong>contents</strong> (their Values), weighting them by how relevant each label was to your question.</p>
+          <p><strong>The idea:</strong> Instead of one big attention head with head_size = 32, run four smaller heads with head_size = 8 each. Each head has its own Q, K, V projections and independently computes attention. The outputs are concatenated back to the original dimension. Total parameters are the same, but the model can now capture four different attention patterns simultaneously.</p>
 
           <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch
 import torch.nn as nn
 
-B, T, C = 1, 4, 8     # batch=1, 4 tokens, 8-dim embeddings
-head_size = 16         # dimension of Q, K, V projections
-
-x = torch.randn(B, T, C)
-
-# Three separate linear projections — no bias for clarity
-key   = nn.Linear(C, head_size, bias=False)
-query = nn.Linear(C, head_size, bias=False)
-value = nn.Linear(C, head_size, bias=False)
-
-# Each token produces its own Q, K, V by projecting its embedding
-k = key(x)    # (B, T, head_size) — what each token "contains"
-q = query(x)  # (B, T, head_size) — what each token "wants"
-v = value(x)  # (B, T, head_size) — what each token "offers"
-
-# Q, K, V are just the same embedding transformed 3 different ways!
-print(k.shape)  # torch.Size([1, 4, 16])</code></pre>
-
-          <p style="margin-top:var(--space-2)"><strong>Common confusion:</strong> "Why not just use the raw embeddings?" Because the same token needs to represent different things in different contexts. The linear projections let the model learn separate representations for "what I'm looking for" vs. "what I contain" vs. "what I share." The word "bank" should produce a different Key when it means "river bank" vs. "financial bank" &mdash; and the learned projections make this possible.</p>
-        </div>
-      </div>
-
-      <!-- Concept 4: Computing Attention -->
-      <div class="content-item" style="margin-bottom:var(--space-4)">
-        <div class="content-item__title">Concept 3: Dot Product Similarity &mdash; Matching Queries to Keys</div>
-        <div class="content-item__meta">Covered at ~1:05:00 in the video</div>
-        <div class="content-item__body">
-          <p><strong>The mechanism:</strong> To figure out how much token <em>i</em> should attend to token <em>j</em>, we compute the dot product of token <em>i</em>'s Query with token <em>j</em>'s Key. A high dot product means "these tokens are relevant to each other." We compute ALL pairwise dot products at once using a single matrix multiplication.</p>
-
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Compute attention scores: how relevant is token j to token i?
-# q has shape (B, T, head_size), k has shape (B, T, head_size)
-# We want a (B, T, T) matrix where entry [i,j] = dot(q_i, k_j)
-
-weights = q @ k.transpose(-2, -1)  # (B, T, head_size) @ (B, head_size, T) -> (B, T, T)
-
-# CRITICAL: scale by 1/sqrt(head_size)
-weights = weights * head_size**-0.5
-
-# Without scaling, the dot products can be very large (proportional to head_size).
-# Large values cause softmax to produce near-one-hot distributions,
-# which kills gradients and makes training unstable.</code></pre>
-
-          <p style="margin-top:var(--space-2)"><strong>Why scale?</strong> If the key dimension is 64, the dot products will have variance around 64 &mdash; producing numbers like 50 or -40. When you feed numbers that large into softmax, the output becomes nearly one-hot (one value near 1.0, everything else near 0.0). The model becomes too "confident" and gradients vanish. Dividing by <code>&radic;64 = 8</code> brings the variance back to ~1, keeping softmax in a healthy gradient range.</p>
-
-          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine you are rating restaurants on a scale. If your scale goes 0-100, a restaurant with 95 completely dominates one with 90. But if you normalize to a 0-10 scale (divide by 10), the difference between 9.5 and 9.0 feels more proportional. Scaling prevents any single token from dominating too aggressively.</p>
-        </div>
-      </div>
-
-      <!-- Concept 5: Softmax and Masking -->
-      <div class="content-item" style="margin-bottom:var(--space-4)">
-        <div class="content-item__title">Concept 4: Softmax Normalization &amp; Causal Masking</div>
-        <div class="content-item__meta">Covered at ~1:10:00 in the video</div>
-        <div class="content-item__body">
-          <p><strong>Two problems to solve:</strong></p>
-          <ol style="margin-top:var(--space-1)">
-            <li><strong>Normalization:</strong> Raw dot product scores can be any real number. We need weights between 0 and 1 that sum to 1 (a probability distribution) so we can take a meaningful weighted average. Softmax handles this.</li>
-            <li><strong>No peeking at the future:</strong> During language generation, token 3 must not attend to tokens 4, 5, 6... because those haven't been generated yet. We need to mask them out.</li>
-          </ol>
-
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># weights has shape (B, T, T) — raw attention scores
-
-# Step 1: Create a causal mask (lower triangular)
-tril = torch.tril(torch.ones(T, T))
-# tensor([[1, 0, 0, 0],
-#         [1, 1, 0, 0],
-#         [1, 1, 1, 0],
-#         [1, 1, 1, 1]])
-
-# Step 2: Set future positions to -infinity
-weights = weights.masked_fill(tril == 0, float('-inf'))
-# Before softmax, the matrix looks like:
-# [[ 0.3, -inf, -inf, -inf],
-#  [ 0.1,  0.7, -inf, -inf],
-#  [-0.2,  0.4,  0.5, -inf],
-#  [ 0.6, -0.1,  0.3,  0.8]]
-
-# Step 3: Apply softmax — -inf becomes 0, rest becomes probabilities
-weights = F.softmax(weights, dim=-1)
-# Now each row sums to 1.0, and future positions have weight 0
-# [[ 1.0,  0.0,  0.0,  0.0],   # token 0: only looks at itself
-#  [ 0.35, 0.65, 0.0,  0.0],   # token 1: looks at 0 and 1
-#  [ 0.22, 0.39, 0.39, 0.0],   # token 2: looks at 0, 1, 2
-#  [ 0.28, 0.14, 0.21, 0.37]]  # token 3: looks at all 4</code></pre>
-
-          <p style="margin-top:var(--space-2)"><strong>The elegant trick:</strong> Setting future positions to <code>-inf</code> before softmax is brilliant because <code>e^(-inf) = 0</code>. So softmax naturally zeros out those positions without needing any special case logic. The remaining positions redistribute to sum to 1.0 as if the future positions did not exist.</p>
-
-          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine you are in an exam hall. You can look at other students' work, but a physical divider blocks everyone sitting behind you. You can only see people ahead of you and beside you. The mask is that divider &mdash; it is not that the future tokens are hidden; it is that they literally do not exist from your perspective.</p>
-        </div>
-      </div>
-
-      <!-- Concept 6: Putting it all together -->
-      <div class="content-item" style="margin-bottom:var(--space-4)">
-        <div class="content-item__title">Concept 5: Masked Self-Attention &mdash; The Complete Picture</div>
-        <div class="content-item__meta">Covered at ~1:15:00 in the video</div>
-        <div class="content-item__body">
-          <p>Now we combine everything into a single, complete self-attention head. This is the core building block of every transformer, including GPT, Claude, and every modern LLM.</p>
-
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>class Head(nn.Module):
-    """One head of self-attention."""
-
+class Head(nn.Module):
+    """One head of self-attention (from Session 2)."""
     def __init__(self, head_size):
         super().__init__()
         self.key   = nn.Linear(n_embd, head_size, bias=False)
         self.query = nn.Linear(n_embd, head_size, bias=False)
         self.value = nn.Linear(n_embd, head_size, bias=False)
-        # register_buffer: not a parameter, but saved with the model
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
 
     def forward(self, x):
         B, T, C = x.shape
-
-        # 1. Project embeddings into Q, K, V
-        k = self.key(x)    # (B, T, head_size)
-        q = self.query(x)  # (B, T, head_size)
-        v = self.value(x)  # (B, T, head_size)
-
-        # 2. Compute attention scores (affinities)
-        wei = q @ k.transpose(-2, -1)        # (B, T, T)
-        wei = wei * k.shape[-1]**-0.5        # scale
-
-        # 3. Apply causal mask
+        k = self.key(x)
+        q = self.query(x)
+        v = self.value(x)
+        wei = q @ k.transpose(-2, -1) * k.shape[-1]**-0.5
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf'))
+        wei = F.softmax(wei, dim=-1)
+        return wei @ v
 
-        # 4. Normalize with softmax
-        wei = F.softmax(wei, dim=-1)          # (B, T, T)
+class MultiHeadAttention(nn.Module):
+    """Multiple heads of self-attention in parallel."""
 
-        # 5. Weighted aggregation of values
-        out = wei @ v                          # (B, T, head_size)
-        return out</code></pre>
+    def __init__(self, num_heads, head_size):
+        super().__init__()
+        # Create num_heads independent attention heads
+        self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
+        # Linear projection after concatenation
+        self.proj = nn.Linear(head_size * num_heads, n_embd)
 
-          <p style="margin-top:var(--space-2)"><strong>Step by step through the forward pass:</strong></p>
+    def forward(self, x):
+        # Run all heads in parallel, concatenate their outputs
+        out = torch.cat([h(x) for h in self.heads], dim=-1)
+        # Project back to n_embd dimension
+        out = self.proj(out)
+        return out
+
+# Example: 4 heads, each with head_size=8, embedding dim=32
+# Each head produces (B, T, 8)
+# Concatenated: (B, T, 32)
+# After projection: (B, T, 32) — same shape as input!</code></pre>
+
+          <p style="margin-top:var(--space-2)"><strong>Why the projection layer?</strong> After concatenating, we apply one more linear layer (<code>self.proj</code>). This lets the model learn how to combine information from different heads. Head 1 might find syntactic patterns, Head 2 semantic ones &mdash; the projection layer learns the best way to blend these perspectives.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>Key insight:</strong> Notice that <code>num_heads * head_size = n_embd</code>. We are not adding parameters &mdash; we are dividing the same embedding dimension into multiple smaller subspaces. 4 heads &times; 8 dims = 32 total, same as one head &times; 32 dims. The cost is the same, but the representation is richer.</p>
+        </div>
+      </div>
+
+      <!-- Concept 3: Feed-Forward Network -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 2: The Feed-Forward Network &mdash; Per-Token Processing</div>
+        <div class="content-item__meta">Covered at ~1:25:00 in the video</div>
+        <div class="content-item__body">
+          <p><strong>After attention, each token has gathered context from other tokens.</strong> Now it needs time to "think" &mdash; to process the gathered information and extract useful features. The feed-forward network (FFN) is a two-layer MLP applied to each token independently.</p>
+
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>class FeedForward(nn.Module):
+    """A simple linear layer followed by a non-linearity."""
+
+    def __init__(self, n_embd):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_embd, 4 * n_embd),   # expand: 32 -> 128
+            nn.ReLU(),                         # non-linearity
+            nn.Linear(4 * n_embd, n_embd),    # project back: 128 -> 32
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+# Why 4x expansion?
+# The "Attention Is All You Need" paper uses 4x as a default.
+# The expansion gives the network more capacity to learn complex
+# per-token transformations. Think of it as a bottleneck architecture:
+# compress (n_embd) -> expand (4*n_embd) -> compress (n_embd)</code></pre>
+
+          <p style="margin-top:var(--space-2)"><strong>Attention vs. FFN:</strong> These serve completely different purposes. Attention is a <em>communication</em> mechanism &mdash; tokens share information. The FFN is a <em>computation</em> mechanism &mdash; each token independently processes what it learned. A transformer alternates between these two: communicate, think, communicate, think...</p>
+
+          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> In a team meeting, attention is the discussion phase where everyone shares updates. The FFN is the individual work time afterward where each person privately processes the discussion and updates their own work. Both phases are essential.</p>
+        </div>
+      </div>
+
+      <!-- Concept 4: Residual Connections -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 3: Residual Connections &mdash; The Gradient Highway</div>
+        <div class="content-item__meta">Covered at ~1:30:00 in the video</div>
+        <div class="content-item__body">
+          <p><strong>The problem:</strong> Deep networks suffer from vanishing gradients. As gradients propagate backward through dozens of layers, they get multiplied by small numbers at each step and shrink toward zero. Early layers barely learn anything because the gradient signal is too weak by the time it reaches them.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The solution:</strong> Add the input directly to the output of each sublayer: <code>x = x + sublayer(x)</code>. This creates a "gradient highway" &mdash; during backpropagation, the gradient can flow directly through the addition operation, bypassing the sublayer entirely. Even if the sublayer's gradient is small, the direct path preserves the gradient signal.</p>
+
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Without residual connections (gradients vanish in deep networks):
+x = attention(x)
+x = ffn(x)
+# Gradient must pass through attention AND ffn — gets multiplied down
+
+# With residual connections (gradients flow freely):
+x = x + attention(x)   # gradient can bypass attention via the "+"
+x = x + ffn(x)         # gradient can bypass ffn via the "+"
+
+# The "+" operation has gradient = 1 in both directions.
+# So even if attention's gradient is 0.01, the gradient from the
+# residual path is still 1.0. The total gradient is 1.01, not 0.01.</code></pre>
+
+          <p style="margin-top:var(--space-2)"><strong>Why this is revolutionary:</strong> Before residual connections (ResNet, 2015), training networks deeper than ~20 layers was nearly impossible. After residual connections, we can train networks with 100+ layers. GPT-3 has 96 transformer blocks stacked on top of each other &mdash; this is only possible because of residual connections.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>Analogy:</strong> Imagine a game of telephone where each person has to transform the message. Without residual connections, after 50 people the message is completely garbled. With residual connections, each person whispers their changes, but the original message is always passed along unchanged. Even after 50 people, you still have the original message plus everyone's additions.</p>
+        </div>
+      </div>
+
+      <!-- Concept 5: The Complete Transformer Block -->
+      <div class="content-item" style="margin-bottom:var(--space-4)">
+        <div class="content-item__title">Concept 4: The Complete Transformer Block &mdash; Putting It All Together</div>
+        <div class="content-item__meta">Covered at ~1:35:00 in the video</div>
+        <div class="content-item__body">
+          <p>Now we combine everything into the fundamental repeating unit of a transformer. Every GPT, Claude, Llama, and Gemini model is built by stacking many of these blocks. The pattern is: <strong>Layer Norm &rarr; Multi-Head Attention &rarr; Residual &rarr; Layer Norm &rarr; Feed-Forward &rarr; Residual</strong>.</p>
+
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>class Block(nn.Module):
+    """Transformer block: communication followed by computation."""
+
+    def __init__(self, n_embd, n_head):
+        super().__init__()
+        head_size = n_embd // n_head
+        self.sa = MultiHeadAttention(n_head, head_size)  # communication
+        self.ffwd = FeedForward(n_embd)                   # computation
+        self.ln1 = nn.LayerNorm(n_embd)                   # normalize before attention
+        self.ln2 = nn.LayerNorm(n_embd)                   # normalize before FFN
+
+    def forward(self, x):
+        # Pre-norm variant (Karpathy's approach, same as GPT-2)
+        x = x + self.sa(self.ln1(x))     # 1. normalize -> attend -> add residual
+        x = x + self.ffwd(self.ln2(x))   # 2. normalize -> compute -> add residual
+        return x
+
+# A full GPT model stacks N of these blocks:
+# blocks = nn.Sequential(*[Block(n_embd, n_head) for _ in range(n_layer)])</code></pre>
+
+          <p style="margin-top:var(--space-2)"><strong>Why pre-norm instead of post-norm?</strong> The original "Attention Is All You Need" paper (2017) applies LayerNorm <em>after</em> the sublayer: <code>x = LayerNorm(x + sublayer(x))</code>. But modern transformers (GPT-2 onward) apply it <em>before</em>: <code>x = x + sublayer(LayerNorm(x))</code>. Pre-norm trains more stably because the residual path remains completely unmodified &mdash; no normalization between the input and output of the residual connection.</p>
+
+          <p style="margin-top:var(--space-2)"><strong>The data flow through one block:</strong></p>
           <ol style="margin-top:var(--space-1)">
-            <li><strong>Project:</strong> Each token's embedding is projected into three separate spaces via learned linear layers, producing Q, K, and V vectors.</li>
-            <li><strong>Score:</strong> Every token's Query is dot-producted with every token's Key, giving a T&times;T matrix of "how much should I attend to you?" scores.</li>
-            <li><strong>Scale:</strong> Divide by &radic;head_size to prevent softmax saturation.</li>
-            <li><strong>Mask:</strong> Zero out future positions by setting them to -inf.</li>
-            <li><strong>Normalize:</strong> Softmax converts scores to weights that sum to 1 per row.</li>
-            <li><strong>Aggregate:</strong> Multiply the attention weights by the Value matrix. Each token's output is now a weighted blend of all (allowed) tokens' value vectors.</li>
+            <li><strong>LayerNorm 1:</strong> Normalize the input features for each token</li>
+            <li><strong>Multi-Head Attention:</strong> Tokens communicate &mdash; each token gathers context from past tokens via Q/K/V</li>
+            <li><strong>Residual Add 1:</strong> Add the attention output back to the original input &mdash; preserves information</li>
+            <li><strong>LayerNorm 2:</strong> Normalize again before the next sublayer</li>
+            <li><strong>Feed-Forward:</strong> Each token independently processes its gathered context (expand 4x, ReLU, project back)</li>
+            <li><strong>Residual Add 2:</strong> Add the FFN output back &mdash; preserves information again</li>
           </ol>
 
-          <p style="margin-top:var(--space-2)"><strong>The big picture analogy:</strong> Self-attention is like a cocktail party. Each person (token) arrives with three things: a name tag (Key) describing who they are, a question (Query) about what they want to discuss, and expertise (Value) they can share. Everyone scans everyone else's name tags, comparing them with their own question. You then spend most of your time talking to the people whose name tags match your question best, and you walk away with a weighted blend of everyone's expertise &mdash; mostly from the relevant people, with a little from everyone else.</p>
+          <p style="margin-top:var(--space-2)"><strong>How this connects to real AI systems:</strong> GPT-2 Small has 12 of these blocks stacked. GPT-3 has 96. Claude and other frontier models have similar (or deeper) stacks. The remarkable thing is that every block has the same structure &mdash; the entire intelligence of the model comes from stacking this simple communicate-then-compute pattern over and over.</p>
         </div>
       </div>
     </section>
@@ -396,12 +359,12 @@ weights = F.softmax(weights, dim=-1)
     <section style="margin-bottom:var(--space-6)">
       <h2 class="section-title"><span class="section-title__icon">&#128187;</span> Practical Exercise</h2>
       <div class="content-item">
-        <div class="content-item__title">Implement Self-Attention from Scratch</div>
+        <div class="content-item__title">Build a Complete Transformer Block</div>
         <div class="content-item__meta">Estimated time: 30-45 minutes</div>
         <div class="content-item__body">
-          <p>Your task: implement a single self-attention head and visualize the attention weights. This will make the mechanism concrete and give you intuition for how tokens communicate.</p>
+          <p>Your task: assemble all the components from Sessions 2 and 3 into a working transformer block. Then stack multiple blocks and observe how the model's capacity grows.</p>
 
-          <p style="margin-top:var(--space-3);font-weight:600">Part 1: Build a Self-Attention Head</p>
+          <p style="margin-top:var(--space-3);font-weight:600">Part 1: Implement MultiHeadAttention and FeedForward</p>
           <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code>import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -409,67 +372,92 @@ import torch.nn.functional as F
 torch.manual_seed(42)
 
 # Hyperparameters
-B = 1          # batch size
-T = 8          # sequence length (8 tokens)
-C = 32         # embedding dimension
-head_size = 16 # attention head dimension
+n_embd = 32       # embedding dimension
+n_head = 4        # number of attention heads
+head_size = n_embd // n_head  # 8
+block_size = 16   # max sequence length
+B, T = 1, 8       # batch=1, 8 tokens
 
-# Simulated token embeddings (in practice these come from nn.Embedding)
-x = torch.randn(B, T, C)
+# TODO: Implement Head class from Session 2
+# (copy your code from the Session 2 exercise)
 
-# TODO Step 1: Create three nn.Linear layers for key, query, value
-#   key   = nn.Linear(C, head_size, bias=False)
-#   query = nn.Linear(C, head_size, bias=False)
-#   value = nn.Linear(C, head_size, bias=False)
+# TODO: Implement MultiHeadAttention
+# class MultiHeadAttention(nn.Module):
+#     def __init__(self, num_heads, head_size):
+#         super().__init__()
+#         self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
+#         self.proj = nn.Linear(head_size * num_heads, n_embd)
+#     def forward(self, x):
+#         out = torch.cat([h(x) for h in self.heads], dim=-1)
+#         return self.proj(out)
 
-# TODO Step 2: Compute k, q, v by passing x through each layer
-#   k = key(x)    # (B, T, head_size)
-#   q = query(x)  # (B, T, head_size)
-#   v = value(x)  # (B, T, head_size)
+# TODO: Implement FeedForward
+# class FeedForward(nn.Module):
+#     def __init__(self, n_embd):
+#         super().__init__()
+#         self.net = nn.Sequential(
+#             nn.Linear(n_embd, 4 * n_embd),
+#             nn.ReLU(),
+#             nn.Linear(4 * n_embd, n_embd),
+#         )
+#     def forward(self, x):
+#         return self.net(x)</code></pre>
 
-# TODO Step 3: Compute raw attention scores
-#   wei = q @ k.transpose(-2, -1)  # (B, T, T)
-#   wei = wei * head_size**-0.5    # scale by 1/sqrt(head_size)
+          <p style="margin-top:var(--space-3);font-weight:600">Part 2: Assemble the Transformer Block</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># TODO: Implement the Block class
+# class Block(nn.Module):
+#     def __init__(self, n_embd, n_head):
+#         super().__init__()
+#         head_size = n_embd // n_head
+#         self.sa = MultiHeadAttention(n_head, head_size)
+#         self.ffwd = FeedForward(n_embd)
+#         self.ln1 = nn.LayerNorm(n_embd)
+#         self.ln2 = nn.LayerNorm(n_embd)
+#     def forward(self, x):
+#         x = x + self.sa(self.ln1(x))
+#         x = x + self.ffwd(self.ln2(x))
+#         return x
 
-# TODO Step 4: Apply causal mask
-#   tril = torch.tril(torch.ones(T, T))
-#   wei = wei.masked_fill(tril == 0, float('-inf'))
+# Test: create a single block and pass data through
+x = torch.randn(B, T, n_embd)
+block = Block(n_embd, n_head)
+out = block(x)
+print(f"Input shape:  {x.shape}")     # (1, 8, 32)
+print(f"Output shape: {out.shape}")   # (1, 8, 32) — same!
 
-# TODO Step 5: Apply softmax
-#   wei = F.softmax(wei, dim=-1)  # (B, T, T)
+# Verify residual connection works:
+# The output should be close to (but not identical to) the input
+print(f"Mean diff from input: {(out - x).abs().mean():.4f}")  # small but non-zero</code></pre>
 
-# TODO Step 6: Compute output
-#   out = wei @ v  # (B, T, head_size)
+          <p style="margin-top:var(--space-3);font-weight:600">Part 3: Stack Multiple Blocks</p>
+          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># Stack 4 blocks (like a mini GPT)
+n_layer = 4
+blocks = nn.Sequential(*[Block(n_embd, n_head) for _ in range(n_layer)])
+final_ln = nn.LayerNorm(n_embd)
 
-# Print the attention weights for the first batch element
-# print(wei[0])  # Should be a (T, T) lower-triangular matrix of weights</code></pre>
+x = torch.randn(B, T, n_embd)
+out = final_ln(blocks(x))
 
-          <p style="margin-top:var(--space-3);font-weight:600">Part 2: Visualize and Understand the Weights</p>
-          <pre style="background:var(--color-surface);padding:var(--space-3);border-radius:var(--radius-sm);margin-top:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);overflow-x:auto"><code># After running Part 1, examine the attention weights:
-print("Attention weights shape:", wei.shape)  # (1, 8, 8)
-print("Row sums:", wei[0].sum(dim=-1))        # Should all be ~1.0
-print("Upper triangle (should be 0):", wei[0][0, 1:])  # Token 0 can't see future
+print(f"4-block output shape: {out.shape}")  # (1, 8, 32)
 
-# Bonus: Compare uniform averaging vs. learned attention
-tril = torch.tril(torch.ones(T, T))
-uniform_weights = tril / tril.sum(dim=1, keepdim=True)
-print("\nUniform weights (row 4):", uniform_weights[3])
-print("Learned weights (row 4):", wei[0][3])
-# Notice: learned weights are NOT uniform — the model has preferences!</code></pre>
+# Count parameters
+total_params = sum(p.numel() for p in blocks.parameters())
+print(f"Total parameters in 4 blocks: {total_params:,}")
+# Compare: GPT-2 Small (12 blocks, n_embd=768) has ~124M parameters</code></pre>
 
           <p style="margin-top:var(--space-3);font-weight:600">Expected Observations:</p>
           <ul style="margin-top:var(--space-1)">
-            <li>The attention weight matrix is lower-triangular &mdash; all upper-right entries are exactly 0.0</li>
-            <li>Each row sums to exactly 1.0 (valid probability distribution)</li>
-            <li>The learned weights are NOT uniform like the simple average &mdash; some tokens get more attention than others</li>
-            <li>The output <code>out</code> has shape <code>(B, T, head_size)</code> &mdash; each token now contains a blend of information from all tokens it can see</li>
+            <li>Input and output shapes are identical &mdash; transformer blocks preserve dimensionality</li>
+            <li>The residual connection means output is close to input (small perturbation), not a completely different tensor</li>
+            <li>Stacking more blocks increases parameter count linearly</li>
+            <li>Each block's parameters are independent &mdash; they do NOT share weights</li>
           </ul>
 
           <p style="margin-top:var(--space-3);font-weight:600">Stretch Goals:</p>
           <ul style="margin-top:var(--space-1)">
-            <li>Remove the causal mask (skip the <code>masked_fill</code> step) and see how the weights change &mdash; this is what encoder-style (bidirectional) attention looks like</li>
-            <li>Try different <code>head_size</code> values (4, 16, 64) and observe how the attention pattern sharpness changes</li>
-            <li>Remove the scaling (<code>* head_size**-0.5</code>) and observe how softmax outputs become much sharper (near one-hot)</li>
+            <li>Remove the residual connections (<code>x = self.sa(self.ln1(x))</code> instead of <code>x = x + self.sa(self.ln1(x))</code>) and observe how the output diverges dramatically from the input</li>
+            <li>Remove LayerNorm and see if the output values explode or collapse</li>
+            <li>Try different head counts (1, 2, 4, 8) with the same total n_embd &mdash; do more heads produce different gradient magnitudes?</li>
           </ul>
         </div>
       </div>
@@ -483,39 +471,39 @@ print("Learned weights (row 4):", wei[0][3])
           <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--space-3)">
             <li style="display:flex;gap:var(--space-2)">
               <span style="color:var(--color-accent);flex-shrink:0">&#10147;</span>
-              <span><strong>Self-attention lets tokens communicate.</strong> Instead of each token being an island (like our bigram model), self-attention lets every token gather information from all the tokens that came before it, with learned weights that determine who matters most.</span>
+              <span><strong>Multi-head attention captures multiple patterns simultaneously.</strong> Instead of one head that can only focus on one type of relationship, we run several smaller heads in parallel. Each head learns to attend to different things &mdash; syntax, semantics, position, etc. The outputs are concatenated and projected back to the original dimension.</span>
             </li>
             <li style="display:flex;gap:var(--space-2)">
               <span style="color:var(--color-accent);flex-shrink:0">&#10147;</span>
-              <span><strong>Query, Key, Value is a search engine.</strong> The Query asks "what am I looking for?", the Key says "here's what I contain," and the dot product between them measures relevance. The Value is the actual content that gets passed along. This Q/K/V pattern is the single most important architectural idea in modern AI.</span>
+              <span><strong>Attention communicates, feed-forward computes.</strong> The transformer block alternates between two fundamentally different operations: attention (tokens share information) and FFN (tokens independently process what they learned). This communicate-then-think pattern is the heartbeat of every modern LLM.</span>
             </li>
             <li style="display:flex;gap:var(--space-2)">
               <span style="color:var(--color-accent);flex-shrink:0">&#10147;</span>
-              <span><strong>Masking preserves causality.</strong> By setting future positions to negative infinity before softmax, we ensure the model never cheats by looking at tokens it hasn't generated yet. This is what makes the model autoregressive &mdash; it generates one token at a time, left to right.</span>
+              <span><strong>Residual connections are the secret to depth.</strong> Without <code>x + sublayer(x)</code>, gradients vanish after ~20 layers and the model cannot learn. With residual connections, gradients flow freely through the addition operator, enabling 96+ layer models like GPT-3. This single idea unlocked the era of deep transformers.</span>
             </li>
             <li style="display:flex;gap:var(--space-2)">
               <span style="color:var(--color-accent);flex-shrink:0">&#10147;</span>
-              <span><strong>Scaling prevents gradient death.</strong> Without dividing by &radic;head_size, dot products grow large, softmax produces near-one-hot outputs, and gradients vanish. The scaling factor keeps everything in a numerically healthy range.</span>
+              <span><strong>Layer normalization keeps training stable.</strong> Pre-norm (normalize before each sublayer) is the modern standard. It ensures that the inputs to attention and FFN have consistent scale, preventing numerical instability and enabling smoother training dynamics.</span>
             </li>
             <li style="display:flex;gap:var(--space-2)">
               <span style="color:var(--color-success);flex-shrink:0">&#9733;</span>
-              <span><strong>Aha moment:</strong> Self-attention is just a fancy weighted average. Each token's output is a weighted sum of all (past) tokens' Value vectors. The weights are not fixed &mdash; they are dynamically computed based on the content of the tokens via the Q&middot;K dot product. This is what makes transformers so powerful: the way information flows between tokens is content-dependent, not position-dependent.</span>
+              <span><strong>Aha moment:</strong> The entire transformer block is just two operations repeated over and over: (1) let tokens talk to each other (attention), then (2) let each token think alone (FFN). The residual connections and layer norms are just infrastructure to make this work at scale. Every frontier AI model &mdash; GPT-4, Claude, Gemini, Llama &mdash; is built by stacking this exact same pattern dozens or hundreds of times. The architecture is surprisingly simple; the magic is in the scale and the training data.</span>
             </li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- What's Next -->
+    <!-- Roadmap -->
     <section style="margin-bottom:var(--space-6)">
       <h2 class="section-title"><span class="section-title__icon">&#128640;</span> What's Next</h2>
       <div class="content-item">
         <div class="content-item__body">
-          <p><strong>Session 3: Multi-Head Attention &amp; The Full Transformer Block</strong></p>
-          <p style="margin-top:var(--space-2);color:var(--color-text-secondary)">We now have a single attention head that lets tokens communicate. But one head can only attend to one kind of pattern at a time. In Session 3, we will learn <strong>multi-head attention</strong> &mdash; running multiple attention heads in parallel so the model can simultaneously attend to different types of relationships (syntactic, semantic, positional). We will also build the complete <strong>transformer block</strong> by adding feed-forward layers, residual connections, and layer normalization. By the end of Session 3, we will have all the building blocks needed to assemble a full GPT model.</p>
+          <p><strong>Session 4: Building the Full GPT Model &mdash; Assembly &amp; Training</strong></p>
+          <p style="margin-top:var(--space-2);color:var(--color-text-secondary)">We now have all the building blocks: token embeddings, positional embeddings, multi-head attention, feed-forward networks, residual connections, and layer normalization. In Session 4, we will assemble these into a complete <strong>GPT language model</strong>. We will add the final linear projection head for next-token prediction, implement the training loop with cross-entropy loss, and watch our model learn to generate coherent text from Shakespeare. We will also discuss layer norms at the output, dropout for regularization, and how the model scales.</p>
           <div style="margin-top:var(--space-3)">
-            <span class="tag">Session 3 of 5</span>
-            <span class="tag tag--yellow">Core concept: Multi-Head Attention</span>
+            <span class="tag">Session 4 of 5</span>
+            <span class="tag tag--yellow">Full GPT assembly &amp; training loop</span>
           </div>
         </div>
       </div>
