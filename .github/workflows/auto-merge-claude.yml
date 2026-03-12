@@ -14,6 +14,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   auto-merge:
@@ -47,3 +48,9 @@ jobs:
           git fetch origin "$BRANCH"
           git merge "origin/$BRANCH" --no-ff -m "Auto-merge $BRANCH into main"
           git push origin main
+
+      - name: Trigger deploy to Pages
+        run: |
+          gh workflow run deploy-pages.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
