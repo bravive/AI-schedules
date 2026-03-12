@@ -1,19 +1,39 @@
 {
   "latest": {
     "ai-learning-engineer": {
-      "date": "2026-03-11",
-      "path": "output/ai-learning-engineer/2026-03-11.html"
+      "date": "2026-03-12",
+      "path": "output/ai-learning-engineer/2026-03-12.html"
     },
     "stock-trader": {
-      "date": "2026-03-11",
-      "path": "output/stock-trader/2026-03-11.html"
+      "date": "2026-03-12",
+      "path": "output/stock-trader/2026-03-12.html"
     },
     "market-news": {
-      "date": "2026-03-11",
-      "path": "output/market-news/2026-03-11.html"
+      "date": "2026-03-12",
+      "path": "output/market-news/2026-03-12.html"
     }
   },
   "archive": [
+    {
+      "date": "2026-03-12",
+      "tasks": [
+        {
+          "type": "ai-learning-engineer",
+          "label": "AI Learning Engineer",
+          "path": "output/ai-learning-engineer/2026-03-12.html"
+        },
+        {
+          "type": "stock-trader",
+          "label": "Stock Trader",
+          "path": "output/stock-trader/2026-03-12.html"
+        },
+        {
+          "type": "market-news",
+          "label": "Market-Moving News",
+          "path": "output/market-news/2026-03-12.html"
+        }
+      ]
+    },
     {
       "date": "2026-03-11",
       "tasks": [
