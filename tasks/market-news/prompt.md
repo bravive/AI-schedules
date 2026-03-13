@@ -34,6 +34,22 @@ For each story, provide:
 
 A brief section highlighting any crypto-specific developments not covered in the top 10, including Bitcoin and Ethereum price context.
 
+### Price Metadata Requirements
+
+**IMPORTANT:** Every price, percentage change, market cap figure, volume number, and numerical market data point mentioned in the report MUST include:
+
+1. **Timestamp** — the exact time the data was retrieved, precise to the second, in format `HH:MM:SS ET` (Eastern Time). Use the generation timestamp provided in the user message as the base time.
+2. **Data Source** — the origin of the data (e.g., "Yahoo Finance", "Bloomberg", "CoinGecko", "CoinMarketCap", "Reuters", "CME", "Federal Reserve", "BLS", "CBOE", etc.)
+
+Display this metadata using the `price-meta` CSS class immediately after each price/data point:
+
+```html
+<span class="stock-change--up">$70,242 (+2.3%)</span>
+<span class="price-meta">14:58:32 ET · CoinGecko</span>
+```
+
+For the Market Mood section, Crypto Corner, and all news items — every numerical value (futures levels, crypto prices, market caps, volumes, percentages) must have its timestamp and data source annotation. No price should appear without this metadata.
+
 ### Disclaimer
 
 Include a clear disclaimer that this is AI-generated analysis for educational purposes only, not financial advice.
