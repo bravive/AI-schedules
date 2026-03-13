@@ -378,6 +378,20 @@ a:hover {
   font-weight: 500;
 }
 
+/* ---- Price metadata (timestamp & source) ---- */
+.price-meta {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-left: var(--space-2);
+  opacity: 0.7;
+}
+
+.price-meta::before {
+  content: '\23F1 ';
+}
+
 /* ---- Confidence meter ---- */
 .confidence {
   display: flex;

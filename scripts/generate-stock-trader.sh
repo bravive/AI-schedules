@@ -7,6 +7,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 TODAY=$(date -u +"%Y-%m-%d")
+NOW_ET=$(TZ="America/New_York" date +"%Y-%m-%d %H:%M:%S %Z")
 OUTPUT_DIR="$ROOT_DIR/output/stock-trader"
 OUTPUT_FILE="$OUTPUT_DIR/$TODAY.html"
 LATEST_FILE="$OUTPUT_DIR/latest.html"
@@ -66,7 +67,7 @@ HTML_PREFIX="${HTML_PREFIX//DATE_PLACEHOLDER/$TODAY}"
 HTML_SUFFIX="${HTML_SUFFIX//DATE_PLACEHOLDER/$TODAY}"
 
 # Call Claude API
-USER_MESSAGE="Today is $TODAY. Generate today's pre-market stock analysis. Output ONLY the inner HTML content (the sections between header and footer — do not include <!DOCTYPE>, <html>, <head>, <body>, or wrapper tags). Use CSS classes from the shared design system (stock-table, stock-symbol, stock-change--up, stock-change--down, confidence, confidence__bar, confidence__fill, confidence__label, content-item, section-title, tag, badge, etc.)."
+USER_MESSAGE="Today is $TODAY. Generation timestamp: $NOW_ET. Generate today's pre-market stock analysis. For every price, percentage change, and numerical data point, include a timestamp (use the generation timestamp as the base time, in HH:MM:SS ET format) and data source using the price-meta CSS class. Output ONLY the inner HTML content (the sections between header and footer — do not include <!DOCTYPE>, <html>, <head>, <body>, or wrapper tags). Use CSS classes from the shared design system (stock-table, stock-symbol, stock-change--up, stock-change--down, confidence, confidence__bar, confidence__fill, confidence__label, content-item, section-title, tag, badge, price-meta, etc.)."
 
 RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
